@@ -31,9 +31,9 @@
 </main>
 
 <footer>
-    <p>Situé à Angré 8ème tranche</p>
-    <p>Tel : +225 24 00 25 54 / +225 07 93 97 12 / +225 06 72 68 83 - 13 BP 1715 Abidjan 13</p>
-    <p>N° CC 0526299 H Réel Simplifié d'Imposition Centre des Impôts d'Abobo III N° RC : CI-ABJ-2008-A-1483</p>
+    <p>Situé à Angré 8ème tranche non loin du carrefour de la prière.</p>
+    <p>Tel : +225 : 07 07 93 97 12 / 07 07 94 08 08 /05 06 72 68 83 13 BP 1715 Abidjan 13</p>
+    <p>N°CC : 1912797 L Réel Simplifié d’Imposition Centre des Impôts de la Djibi N° RC : CI-ABJ-2019-B- 02715 NSIA N° 035361963575</p>
     <p>IBAN : CI93 CI04 2012 - Compte Bancaire BIAO N° 03536196357524  - SWIFT Code : BIAOCIABXXX</p>
     <p>Email : commercial@ivoireautoservices.net</p>
 </footer>

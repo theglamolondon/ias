@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CompteController extends Controller
 {
@@ -64,7 +65,7 @@ class CompteController extends Controller
 	    }
 
     	$souscompte->libelle = $request->input("libelle");
-    	$souscompte->slug = strtolower(str_slug($request->input("libelle"),'-'));
+    	$souscompte->slug = strtolower(Str::slug($request->input("libelle"),'-'));
     	$souscompte->commentaire = $request->input("commentaire");
     	$souscompte->save();
 
@@ -144,7 +145,7 @@ class CompteController extends Controller
 	    $souscompte = $this->getSousCompteFromSlug($slug);
 
 		$souscompte->libelle = $request->input("libelle");
-		$souscompte->slug = strtolower(str_slug($request->input("libelle"),'-'));
+		$souscompte->slug = strtolower(Str::slug($request->input("libelle"),'-'));
 		$souscompte->commentaire = $request->input("commentaire");
 
 	    if($this->checkExistUser($request->input('employe_id'))){
@@ -155,7 +156,7 @@ class CompteController extends Controller
 		    $souscompte->can_appro = true;
 	    }
 
-	    $souscompte->save();
+	    $souscompte->update();
 
 	    $notification = new Notifications();
 	    $notification->add(Notifications::SUCCESS,"Sous-compte modifié avec succès !");
