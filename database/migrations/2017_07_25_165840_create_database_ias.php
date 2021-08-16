@@ -134,6 +134,7 @@ class CreateDatabaseIas extends Migration
 		});
 		Schema::create("piececomptable",function (Blueprint $table){
 			$table->increments('id');
+			$table->smallInteger('type_piece')->nullable(false)->default(\App\PieceComptable::TYPE_FACTURE_PIECE);
 			$table->string("objet",150);
 			$table->string("referencebc")->nullable();
 			$table->string('referenceproforma')->unique();
@@ -227,6 +228,8 @@ class CreateDatabaseIas extends Migration
 			$table->string('modele');
 			$table->integer('modele_id');
 			$table->integer('quantite');
+			$table->integer('quantite_periode')->default(0);
+			$table->string('periode')->nullable(true);
 			$table->integer('quantitelivree')->default(0);
 			$table->unsignedInteger('piececomptable_id');
 			$table->foreign('piececomptable_id')->references('id')->on('piececomptable');

@@ -76,4 +76,20 @@ class Produit extends Model implements Commercializable
 	public function getRemise() {
 		return $this->remise;
 	}
+
+    /**
+     * @return int
+     */
+    public function getPeriodeQuantity()
+    {
+       return $this->quantite_periode;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPeriode()
+    {
+        return $this->periode;
+    }
 }

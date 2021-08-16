@@ -54,6 +54,9 @@
             <th width="35%">Désignation</th>
             <th width="10%" class="amount">P.U HT</th>
             <th class="quantity">Qté</th>
+            @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+                <th width="10%">Période</th>
+            @endif
             <th class="amount" width="5%">Remise</th>
             <th width="20%" class="amount">Total</th>
         </tr>
@@ -65,24 +68,39 @@
             <td>{{ ucfirst($ligne->designation) }}</td>
             <td class="amount">{{ number_format($ligne->prixunitaire,0,',',' ') }}</td>
             <td class="quantity">{{ number_format($ligne->quantite,0,',',' ') }}</td>
+            @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+                <td class="quantity">{{ $ligne->quantite_periode }} {{ $ligne->periode }}</td>
+            @endif
             <td class="amount">{{ ($ligne->remise * 100) }} %</td>
-            <td class="amount">{{ number_format(($ligne->prixunitaire * $ligne->quantite) - ceil($ligne->prixunitaire * $ligne->quantite * $ligne->remise),0,',',' ') }}</td>
+            <td class="amount">{{ number_format((($ligne->prix * $ligne->quantite * $ligne->quantite_periode) * (1 - $ligne->remise)),0,',',' ') }}</td>
         </tr>
         @endforeach
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2"></td>
+                @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+                    <td colspan="3"></td>
+                @else
+                    <td colspan="2"></td>
+                @endif
                 <td colspan="2" class="amount h4">Montant HT</td>
                 <td colspan="2" class="amount h4">{{ number_format($pieceComptable->montantht,0,','," ") }} </td>
             </tr>
             <tr>
-                <td colspan="2"></td>
+                @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+                    <td colspan="3"></td>
+                @else
+                    <td colspan="2"></td>
+                @endif
                 <td colspan="2" class="amount h4">TVA 18% @if($pieceComptable->isexonere)<small>(Exonéré de TVA)</small> @endif</td>
                 <td colspan="2" class="amount h4">{{ number_format(ceil($pieceComptable->montantht * $pieceComptable->tva),0,','," ") }} </td>
             </tr>
             <tr>
-                <td colspan="2"></td>
+                @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+                    <td colspan="3"></td>
+                @else
+                    <td colspan="2"></td>
+                @endif
                 <td colspan="2" class="amount h3">Montant TTC</td>
                 <td colspan="2" class="amount h3">{{ number_format(ceil($pieceComptable->montantht * ($pieceComptable->isexonere ? 1 : (1 + $pieceComptable->tva) )),0,','," ") }} </td>
             </tr>

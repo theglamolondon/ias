@@ -40,6 +40,16 @@ interface Commercializable
      */
     public function getQuantity();
 
+    /**
+     * @return int
+     */
+    public function getPeriodeQuantity();
+
+    /**
+     * @return int
+     */
+    public function getPeriode();
+
 	/**
 	 * @return float
 	 */

@@ -10,6 +10,9 @@ class PieceComptable extends Model
     const FACTURE = 2;
     const BON_LIVRAISON = 3;
 
+    const TYPE_FACTURE_PIECE = 1;
+    const TYPE_FACTURE_MISSION = 2;
+
     const TVA = 0.18;
 
     public $timestamps = false;

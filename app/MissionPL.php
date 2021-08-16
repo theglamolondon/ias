@@ -105,4 +105,20 @@ class MissionPL extends Model implements Commercializable, IAmortissement, IMiss
 	public function getDuree(){
 		return (new Carbon($this->datefin ?? Carbon::now()))->diffInDays(new Carbon($this->datedebut)) + 1;
 	}
+
+    /**
+     * @return int
+     */
+    public function getPeriodeQuantity()
+    {
+        return 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPeriode()
+    {
+        return "jours";
+    }
 }

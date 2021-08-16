@@ -1,6 +1,6 @@
 @font-face {
     font-family: SourceSansPro;
-    src: url(SourceSansPro-Regular.ttf);
+    src: url('SourceSansPro-Regular.ttf');
 }
 
 .clearfix:after {

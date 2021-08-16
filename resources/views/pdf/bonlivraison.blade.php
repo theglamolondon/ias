@@ -39,6 +39,9 @@
             <th width="20%">Référence</th>
             <th width="60%">Désignation</th>
             <th class="quantity">Quantité</th>
+            @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+            <th width="10%">Période</th>
+            @endif
         </tr>
         </thead>
         <tbody>
@@ -47,6 +50,9 @@
                 <td class="center">{{ $ligne->reference ? $ligne->reference : "#" }}</td>
                 <td>{{ ucfirst($ligne->designation) }}</td>
                 <td class="quantity">{{ number_format($ligne->quantite,0,',',' ') }}</td>
+                @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+                <td>{{ $ligne->quantite_periode }} {{ $ligne->periode }}</td>
+                @endif
             </tr>
         @endforeach
         </tbody>

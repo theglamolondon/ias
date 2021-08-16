@@ -14,9 +14,8 @@
 <header class="clearfix">
     <div>
         <div id="logo">
-            <br><br><br><br><br><br><br>
-            <br><br><br/><br/><br/><br/>
-
+            <br/><br/><br/><br/><br/><br/><br/>
+            <br/><br/><br/><br/><br/><br/>
         </div>
     </div>
 </header>

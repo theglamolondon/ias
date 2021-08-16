@@ -89,7 +89,7 @@
                                 <div class="form-group">
                                     <b>Période de disponibilité</b>
                                     <div class="form-line">
-                                        <input type="text" name="periode" class="form-control" value="" id="periode">
+                                        <input type="text" name="periodeDispo" class="form-control" value="" id="periodeDispo">
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                         <div class="col-lg-1 col-md-1 col-sm-4 col-xs-5 form-control-label">
                             <label for="remise">Remise</label>
                         </div>
-                        <div class="col-lg-2 col-md-2 col-sm-8 col-xs-7">
+                        <div class="col-lg-1 col-md-1 col-sm-8 col-xs-7">
                             <div class="input-group">
                                 <div class="form-line">
                                     <input name="remise" id="remise" type="number" value="0" class="form-control">
@@ -131,6 +131,29 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if(request()->has("from"))
+                        <div class="col-lg-1 col-md-1 col-sm-4 col-xs-5 form-control-label">
+                            <label for="quantity">Période </label>
+                        </div>
+                        <div class="col-lg-1 col-md-1 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <input name="quantite_periode" id="quantite_periode" type="number" class="form-control" value="1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-8 col-xs-7">
+                            <div class="form-group">
+                                <div class="form-line">
+                                    <select name="periode" id="periode" class="form-control">
+                                        <option selected>Jours</option>
+                                        <option>Mois</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                         <button type="button" id="btnajouter" class="btn btn-primary m-t-15 waves-effect">Ajouter</button>
                     </div>
 
@@ -155,6 +178,9 @@
                             <th width="10%">Référence</th>
                             <th>Description</th>
                             <th class="text-right" width="8%">Quantité</th>
+                            @if(request()->has("from"))
+                            <th class="text-right" colspan="2" width="10%">Période</th>
+                            @endif
                             <th class="text-right" width="10%">Prix Unitaire</th>
                             <th class="text-right" width="6%">Remise %</th>
                             <th class="text-right" width="15%">Montant HT</th>
@@ -167,6 +193,10 @@
                             <td>{{ $ligne->getReference() }}</td>
                             <td>{{ $ligne->detailsForCommande() }}</td>
                             <td><input type="number" class="form-control quantite" value="{{ $ligne->getQuantity() }}"></td>
+                            @if(request()->has("from"))
+                            <td><input type="number" class="form-control periode" value="{{ $ligne->getPeriodeQuantity() }}"></td>
+                            <td>{{ $ligne->getPeriode() }}</td>
+                            @endif
                             <td class="price text-right">{{ $ligne->getPrice() }}</td>
                             <td class="remise text-right">{{ $ligne->getRemise() * 100 }}</td>
                             <td class="amount text-right">{{ ($ligne->getPrice() * $ligne->getQuantity()) - ceil($ligne->getRemise() * $ligne->getPrice() * $ligne->getQuantity()) }}</td>
@@ -271,6 +301,10 @@
 <script src="{{ asset('plugins/sweetalert/sweetalert.min.js') }}"></script>
 
 <script type="text/javascript" >
+
+    var TYPE_PROFORMA_LOCATION = $("#quantite_periode")[0] !== undefined;
+
+    var TD = null;
     $('.datepicker').bootstrapMaterialDatePicker({
         format: 'DD/MM/YYYY',
         clearButton: false,
@@ -315,9 +349,7 @@
         if($lines.length !== 0)
         {
             facture.lines = [];
-            $.each($lines, function (key, value) {
-                facture.lines.push(getJsonFromTr(value));
-            });
+            $.each($lines, function (key, value) { facture.lines.push(getJsonFromTr(value)); });
         }
 
         facture.isexonere = ($("#isexonere").is(":checked") ? 1 : 0);
@@ -328,6 +360,7 @@
         facture.objet = $("#objet").val();
         facture.partenaire_id = $("#client").val();
         facture.id = $("#IDfacture").val();
+        facture.type_piece = TYPE_PROFORMA_LOCATION ? "{{ \App\PieceComptable::TYPE_FACTURE_MISSION }}" : "{{ \App\PieceComptable::TYPE_FACTURE_PIECE }}";
         //console.log(facture);
         sendDataPost(facture);
     }
@@ -368,15 +401,18 @@
     
     function getJsonFromTr(tr) {
         var $td = $(tr).children();
+        var index = 0;
         return {
-                id: 0,
-                reference: $($td[1]).text(),
-                designation: $($td[2]).text(),
-                quantite: $($($td[3]).children()).val(),
-                prixunitaire: $($td[4]).text(),
-                remise: parseFloat($($td[5]).text())/100,
-                modele: $($td[0]).data("modele"),
-                modele_id: $($td[0]).data("id")
+            id: 0,
+            reference: $($td[++index]).text(),
+            designation: $($td[++index]).text(),
+            quantite: $($($td[++index]).children("input")).val(),
+            quantite_periode: TYPE_PROFORMA_LOCATION ? $($($td[++index]).children("input")).val() : 0,
+            periode: TYPE_PROFORMA_LOCATION ? $($td[++index]).text() : "",
+            prixunitaire: $($td[++index]).text(),
+            remise: parseFloat($($td[++index]).text())/100,
+            modele: $($td[0]).data("modele"),
+            modele_id: $($td[0]).data("id")
         };
     }
     
@@ -434,27 +470,41 @@
     });
 
     $(document).on("change", ".quantite", function (e) {
-        editQty(e.target);
+        editQantite(e.target);
+    });
+
+    $(document).on("change", ".periode", function (e) {
+        editPeriode(e.target);
     });
 
     function addLine() {
         $product = $("#produits option:selected");
-        $quantity = $('#quantity');
+        $quantity = $('#quantity').val();
 
         var id = $product.data('id') == undefined ? 0 : $product.data('id');
         var modele = $product.data("modele") == undefined ? '{{ \App\Mission::class }}' : $product.data("modele");
         var libelle = getLibelle();
+        var qtePeriode = TYPE_PROFORMA_LOCATION ? $("#quantite_periode").val() : 1;
+        var prix = $("#price").val();
         var reference = $product.data("reference") == undefined ? '#' : $product.data("reference");
         var remise = parseFloat($("#remise").val() != NaN ? $("#remise").val() : 0);
-        var amount = (parseInt($("#price").val()) * parseInt($quantity.val())) -  Math.round(parseInt($("#price").val()) * parseInt($quantity.val()) * (remise/100));
+        var amount = (parseInt(prix) * parseInt(qtePeriode) * parseInt($quantity)) * (1 - (remise/100));
+
+        var complementPeriode = "";
+
+        if(TYPE_PROFORMA_LOCATION){
+            complementPeriode = '<td class="periode"><input type="number" class="form-control" value="'+ qtePeriode +'"></td>\n' +
+                "<td>"+ $("#periode").val() +"</td>\n"
+        }
 
         $("#piece tbody").fadeIn().append("<tr>\n" +
             "<th data-id=\""+ id +"\" data-modele=\""+ modele +"\"><a class=\"delete\" href=\"javascript:void(0);\"><i class=\"material-icons\">delete_forever</i> </a></th>\n" +
             "<td>"+ reference +"</td>\n" +
             "<td>"+ libelle +"</td>\n" +
-            "<td><input type=\"number\" class=\"form-control quantite\" value=\""+ $quantity.val() +"\"></td>\n" +
-            "<td class='price text-right'>"+ $("#price").val() +"</td>\n" +
-            "<td class='remise text-right'>"+ $("#remise").val() +"</td>\n" +
+            "<td class='quantite'><input type=\"number\" class='form-control' value=\""+ $quantity +"\"></td>\n" +
+            complementPeriode +
+            "<td class='price text-right'>"+ prix +"</td>\n" +
+            "<td class='remise text-right'>"+ remise +"</td>\n" +
             "<td class='amount text-right'>"+ amount +"</td>\n" +
             "</tr>");
     }
@@ -466,7 +516,7 @@
         if($("#activeDispo").is(":checked")){
             text += " - " + $("#disponibilite option:selected").text();
 
-            if($("#periode").val() != ""){
+            if($("#periodeDispo").val() != ""){
                 text += " (" + $("#periode").val() + ")";
             }
         }
@@ -510,12 +560,25 @@
         }
     }
 
-    function editQty(arg) {
-        var qty = parseInt($(arg).val());
+    function editQantite(arg) {
+        var $quantite = parseInt($(arg).val());
         var $td = $(arg).parent();
+
+        var $qtePeriod = TYPE_PROFORMA_LOCATION ? $($td).siblings(".periode").children("input").val() : 1;
+        updateOtherLines($quantite, $qtePeriod, $td);
+    }
+
+    function editPeriode(arg) {
+        var $qtePeriod = parseInt($(arg).val());
+        var $td = $(arg).parent();
+        var $quantite = $($td).siblings(".quantite").children("input").val();
+        updateOtherLines($quantite, $qtePeriod, $td);
+    }
+
+    function updateOtherLines($quantite, $qtePeriod , $td) {
         var $price = $($td).siblings(".price");
         var $remise = $($td).siblings(".remise");
-        var $amount = (parseInt($($price).text()) * qty) - (parseInt($($price).text()) * qty * (parseFloat($($remise).text())/100));
+        var $amount = (parseInt($($price).text()) * $qtePeriod * $quantite) * (1 - (parseFloat($($remise).text())/100));
         $($($td).siblings(".amount")).text( $amount );
 
         calculAmount();

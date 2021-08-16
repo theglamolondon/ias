@@ -129,4 +129,20 @@ class Mission extends Model implements Commercializable, IAmortissement, IMissio
 	public function getRemise() {
 		return 0;
 	}
+
+    /**
+     * @return int
+     */
+    public function getPeriodeQuantity()
+    {
+        return 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPeriode()
+    {
+        return "jours";
+    }
 }
