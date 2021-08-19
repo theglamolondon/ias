@@ -153,7 +153,7 @@ trait Process
         $piececomptable->validite = $data->get("validite");
         $piececomptable->objet = $data->get("objet");
         $piececomptable->delailivraison = $data->get("delailivraison");
-
+        $piececomptable->type_piece = $data->get("type_piece");
         $piececomptable->utilisateur_id = Auth::id();
         $piececomptable->tva = PieceComptable::TVA;
 

@@ -50,14 +50,14 @@
     <table>
         <thead>
         <tr class="">
-            <th width="15%">Référence</th>
+            <th width="12%">Référence</th>
             <th width="35%">Désignation</th>
-            <th width="10%" class="amount">P.U HT</th>
+            <th width="15%" class="amount">P.U HT</th>
             <th class="quantity">Qté</th>
             @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
                 <th width="10%">Période</th>
             @endif
-            <th class="amount" width="5%">Remise</th>
+            <th class="amount" width="5%">Rem.</th>
             <th width="20%" class="amount">Total</th>
         </tr>
         </thead>
@@ -72,7 +72,12 @@
                 <td class="quantity">{{ $ligne->quantite_periode }} {{ $ligne->periode }}</td>
             @endif
             <td class="amount">{{ ($ligne->remise * 100) }} %</td>
-            <td class="amount">{{ number_format((($ligne->prix * $ligne->quantite * $ligne->quantite_periode) * (1 - $ligne->remise)),0,',',' ') }}</td>
+
+            @if($pieceComptable->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
+                <td class="amount">{{ number_format((($ligne->prixunitaire * $ligne->quantite * ($ligne->quantite_periode <=  0 ? 1 : $ligne->quantite_periode)) * (1 - $ligne->remise)),0,',',' ') }}</td>
+            @else
+                <td class="amount">{{ number_format((($ligne->prixunitaire * $ligne->quantite) * (1 - $ligne->remise)),0,',',' ') }}</td>
+            @endif
         </tr>
         @endforeach
         </tbody>

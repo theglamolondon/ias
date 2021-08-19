@@ -29,7 +29,7 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('/accueil.html', 'HomeController@index')->name('home');
 Route::get('/', 'HomeController@index');
 Route::get('/checking', 'HomeController@checkState')->name('rappel');
-Route::get('/update/run', 'Core\IasUpdate@runUpdate')->name('rappel');
+Route::get('/update/run', 'Core\IasUpdate@runUpdate')->name('maj');
 
 //Véhicules
 Route::prefix('vehicules')->middleware('auth')->group(function (){

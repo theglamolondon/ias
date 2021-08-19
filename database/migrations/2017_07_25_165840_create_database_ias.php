@@ -228,7 +228,7 @@ class CreateDatabaseIas extends Migration
 			$table->string('modele');
 			$table->integer('modele_id');
 			$table->integer('quantite');
-			$table->integer('quantite_periode')->default(0);
+			$table->integer('quantite_periode')->default(1);
 			$table->string('periode')->nullable(true);
 			$table->integer('quantitelivree')->default(0);
 			$table->unsignedInteger('piececomptable_id');
@@ -315,6 +315,14 @@ class CreateDatabaseIas extends Migration
 			$table->integer('annee');
 			$table->unsignedInteger('employe_id');
 			$table->primary(['mois','annee','employe_id']);
+			$table->foreign('employe_id')->references('id')->on('employe');
+		});
+		Schema::create("rappels", function (Blueprint $table){
+			$table->id('id');
+			$table->integer('nap')->default(0);
+			$table->integer('mois');
+			$table->integer('annee');
+			$table->unsignedInteger('employe_id');
 			$table->foreign('employe_id')->references('id')->on('employe');
 		});
 	}
