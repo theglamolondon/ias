@@ -46,20 +46,15 @@ class IasUpdate extends Controller {
 	        $token = request()->query("token");
 
             if($token == "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ"){
-                try{
-                    Schema::table('lignepiece', function (Blueprint $table) {
-                        $table->integer('quantite_periode')->default(1);
-                        $table->string('periode')->nullable(true);
-                    });
-                }catch (\Exception $e ){
-
-                }
 
                 try{
-                    Schema::table('piececomptable', function (Blueprint $table) {
-                        $table->smallInteger('type_piece')
-                            ->nullable(false)
-                            ->default(PieceComptable::TYPE_FACTURE_PIECE);
+                    Schema::create("rappel", function (Blueprint $table){
+                        $table->id('id');
+                        $table->string('titre');
+                        $table->dateTime('dt_rappel');
+                        $table->dateTime('dt_der_trait');
+                        $table->integer('modele_id');
+                        $table->string('handler');
                     });
                 }catch (\Exception $e ){
 

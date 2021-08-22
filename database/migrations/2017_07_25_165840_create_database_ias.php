@@ -317,13 +317,14 @@ class CreateDatabaseIas extends Migration
 			$table->primary(['mois','annee','employe_id']);
 			$table->foreign('employe_id')->references('id')->on('employe');
 		});
-		Schema::create("rappels", function (Blueprint $table){
+		Schema::create("rappel", function (Blueprint $table){
 			$table->id('id');
-			$table->integer('nap')->default(0);
-			$table->integer('mois');
-			$table->integer('annee');
-			$table->unsignedInteger('employe_id');
-			$table->foreign('employe_id')->references('id')->on('employe');
+			$table->string('titre');
+			$table->dateTime('dt_rappel')->nullable(true);
+			$table->dateTime('dt_echeance');
+			$table->dateTime('dt_der_trait');
+			$table->integer('modele_id');
+			$table->string('handler');
 		});
 	}
 

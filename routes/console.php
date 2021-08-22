@@ -29,3 +29,8 @@ Artisan::command('mission:reminder', function () {
 	$reminder = new \App\Http\Controllers\Mission\MissionController();
 	$reminder->reminder();
 })->describe('Send mail reminder to user for mission');
+
+Artisan::command('ias:reminder', function (\App\Console\Commands\ReminderCheck $checker) {
+    $checker->handle();
+})->describe('Send mail reminder to user for mission');
+
