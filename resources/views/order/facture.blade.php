@@ -16,7 +16,7 @@
                     @if($piece->etat != \App\Statut::PIECE_COMPTABLE_FACTURE_ANNULEE)
                         @if($piece->etat == \App\Statut::PIECE_COMPTABLE_PRO_FORMA)
                             <div class="col-lg-2 col-md-3 col-sm-6 col-xs-6">
-                                <a class="btn btn-flat waves-effect bg-deep-orange" href="{{ route("facturation.proforma.nouvelle",["from" => App\Metier\Behavior\Notifications::UPDATE_FROM_PROFORMA, "ID" => $piece->referenceproforma]) }}">
+                                <a class="btn btn-flat waves-effect bg-deep-orange" href="{{ route("facturation.proforma.nouvelle",["from" => App\Metier\Behavior\Notifications::UPDATE_FROM_PROFORMA, "ID" => $piece->referenceproforma, 'type' => $piece->type_piece]) }}">
                                     <i class="material-icons">edit</i> Modifier
                                 </a>
                             </div>

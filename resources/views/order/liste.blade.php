@@ -80,8 +80,8 @@ $totalPeriode = 0;
             <div class="header">
                 <h2>Liste des pièces comptables</h2>
                 <div class="align-right">
-                    <a href="{{ route("facturation.proforma.nouvelle") }}" class="btn btn-flat waves-effect bg-teal"><i class="material-icons">insert_drive_file</i> Nouvelle pro forma</a>
-                    <a href="{{ route("facturation.proforma.nouvelle",['from'=>'mission']) }}" class="btn btn-flat waves-effect bg-teal"><i class="material-icons">insert_drive_file</i> Nouvelle pro forma de location</a>
+                    <a href="{{ route("facturation.proforma.nouvelle", ['type' => \App\PieceComptable::TYPE_FACTURE_PIECE]) }}" class="btn btn-flat waves-effect bg-teal"><i class="material-icons">insert_drive_file</i> Nouvelle pro forma</a>
+                    <a href="{{ route("facturation.proforma.nouvelle",['from'=> \App\Metier\Behavior\Notifications::MISSION_OBJECT, 'type' => \App\PieceComptable::TYPE_FACTURE_MISSION]) }}" class="btn btn-flat waves-effect bg-teal"><i class="material-icons">insert_drive_file</i> Nouvelle pro forma de location</a>
                 </div>
             </div>
             <div class="body table-responsive">

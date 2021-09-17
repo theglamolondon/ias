@@ -132,7 +132,7 @@
                             </div>
                         </div>
 
-                        @if(request()->has("from"))
+                        @if(request()->has("type") && request()->get("type") == \App\PieceComptable::TYPE_FACTURE_MISSION )
                         <div class="col-lg-1 col-md-1 col-sm-4 col-xs-5 form-control-label">
                             <label for="quantity">Période </label>
                         </div>
@@ -178,7 +178,7 @@
                             <th width="10%">Référence</th>
                             <th>Description</th>
                             <th class="text-right" width="8%">Quantité</th>
-                            @if(request()->has("from"))
+                            @if(request()->has("type") && request()->get("type") == \App\PieceComptable::TYPE_FACTURE_MISSION || (isset($proforma) && $proforma->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION ))
                             <th class="text-right" colspan="2" width="10%">Période</th>
                             @endif
                             <th class="text-right" width="10%">Prix Unitaire</th>
@@ -193,7 +193,7 @@
                             <td>{{ $ligne->getReference() }}</td>
                             <td>{{ $ligne->detailsForCommande() }}</td>
                             <td><input type="number" class="form-control quantite" value="{{ $ligne->getQuantity() }}"></td>
-                            @if(request()->has("from"))
+                            @if(request()->has("type") && request()->get("type") == \App\PieceComptable::TYPE_FACTURE_MISSION || $proforma->type_piece == \App\PieceComptable::TYPE_FACTURE_MISSION)
                             <td><input type="number" class="form-control periode" value="{{ $ligne->getPeriodeQuantity() }}"></td>
                             <td>{{ $ligne->getPeriode() }}</td>
                             @endif
