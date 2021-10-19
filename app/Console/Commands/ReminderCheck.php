@@ -45,20 +45,36 @@ class ReminderCheck extends Command
 
         $console->writeln("Début de checking rappel IAS");
 
-        $r1 = new Rappel(["id" => 1, "titre" => "Test 1", "dt_rappel" => null, "dt_echeance" => "2021-08-26 00:00:00", "modele_id" => "1984", "handler" => FactureRappel::class]);
-        $r2 = new Rappel(["id" => 2, "titre" => "Test 2", "dt_rappel" => "2021-08-22 14:45:00", "dt_echeance" => "2021-08-26 00:00:00", "modele_id" => "1980", "handler" => FactureRappel::class]);
-
-        $console->writeln("Récupétration des rappels de la journée");
+        $console->writeln("Récupération des rappels de la journée");
         //$reminders = Rappel::whereBetween('dt_echeance', [Carbon::now()->startOfDay()->toString(), Carbon::now()->endOfDay()->toString()])->get();
-        $reminders = collect([$r1, $r2]);
+        $reminders = [
+            (new Rappel)->forceFill(["id" => 1, "titre" => "Test 1", "dt_rappel" => null,                  "dt_echeance" => "2021-08-28 00:00:00", "modele_id" => "1984", "handler" => FactureRappel::class]),
+            (new Rappel)->forceFill(["id" => 2, "titre" => "Test 2", "dt_rappel" => "2021-08-25 14:45:00", "dt_echeance" => "2021-08-28 00:00:00", "modele_id" => "1980", "handler" => FactureRappel::class]),
 
-        foreach ($reminders as $reminder){
+        ];
+
+        foreach ($reminders as $k => $reminder){
             $date = Carbon::now();
+
+            $console->writeln(" key ".$k);
 
             if(is_null($reminder->dt_rappel)){ //Aucun rappel marqué pour cette tache
                 $console->writeln("");
             }else{ //Notifier uniquement de manière générale
-                env("APP_MISSION_REMINDER", 5);
+                $compteur = env("APP_MISSION_REMINDER", 5);
+
+                $console->writeln("*** date ****" . Carbon::now()->diffInDays($reminder->dt_echeance, false));
+
+                if($compteur >= Carbon::now()-> diffInDays($reminder->dt_echeance, false)){
+
+                }
+
+
+                $rappelObject = new $reminder->handler();
+                $model = $rappelObject->getData($reminder->modele_id);
+                //$rappelObject->
+
+                $console->writeln(json_encode($model));
             }
         }
 

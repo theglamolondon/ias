@@ -30,10 +30,12 @@ class UpdateProforma extends Controller
 
 		    $this->updatePieceComptable($proforma, collect($request->except('lines','_token')));
 
+            $this->deleteAllLines($proforma);
+
 		    //Suppression des lignes de la facture
-		    if(!$this->deleteAllLines($proforma)){
+		    /*if(!$this->deleteAllLines($proforma)){
 		    	throw new ModelNotFoundException("Erreur de suppresion des ligne de la proforma");
-		    }
+		    }*/
 
 		    //Ajout des nouvelles lignes
 		    $this->addLineToPieceComptable($proforma, $request->input('lines'));

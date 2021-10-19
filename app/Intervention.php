@@ -101,4 +101,20 @@ class Intervention extends Model implements IAmortissement, Commercializable
 	public function getRemise() {
 		return 0;
 	}
+
+    /**
+     * @return int
+     */
+    public function getPeriodeQuantity()
+    {
+        return 1;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPeriode()
+    {
+        return "";
+    }
 }

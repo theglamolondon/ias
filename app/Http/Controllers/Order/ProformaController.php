@@ -45,6 +45,8 @@ class ProformaController extends Controller
 				$produit->modele_id = $item->modele_id;
 				$produit->quantite = $item->quantite;
 				$produit->remise = $item->remise;
+				$produit->periode = $item->periode;
+				$produit->quantite_periode = $item->quantite_periode;
 
 				$produit->id = $item->modele_id; //ID du produit et non de la ligne
 		        $lignes->push($produit);

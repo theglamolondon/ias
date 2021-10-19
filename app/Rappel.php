@@ -10,4 +10,9 @@ class Rappel extends Model
     protected $table = "rappel";
 
     protected $fillable = ["*"];
+    protected $guarded = [];
+
+    protected $dates = [
+        'dt_rappel', 'dt_echeance'
+    ];
 }
