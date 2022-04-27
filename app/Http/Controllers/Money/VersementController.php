@@ -19,7 +19,7 @@ class VersementController extends Controller
 
     public function nouveauVersement($code)
     {
-        $mission = $this->missionBuilder()->where("code",$code)->firstOrFail();
+        $mission = $this->missionBuilder()->where("code", $code)->firstOrFail();
 
         $oldVersements = Versement::with("moyenreglement")
                                     ->where("mission_id", $mission->id)->get();

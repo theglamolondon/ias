@@ -80,6 +80,10 @@ class LoginController extends Controller
 
     public function authenticated(Request $request,$user)
     {
+        if($request->expectsJson()){
+            return $user;
+        }
+
         Auth::login($user);
         Cookie::queue(Cookie::make('login',$user->login,60*24*30,"/"));
         redirect()->route('home');
