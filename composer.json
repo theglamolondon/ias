@@ -5,13 +5,14 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8",
         "barryvdh/laravel-dompdf": "^0.8.0",
-        "laravel/framework": "^7.0",
+        "facade/ignition": "^2.0",
+        "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
-        "nunomaduro/collision": "^4.1",
-        "phpunit/phpunit": "^8.5",
-        "facade/ignition": "^2.0"
+        "laravel/ui": "^3.0",
+        "nunomaduro/collision": "^5.0",
+        "phpunit/phpunit": "^9.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
