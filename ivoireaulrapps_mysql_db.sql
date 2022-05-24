@@ -21,8 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données :  `ivoireaulrapps`
 --
-CREATE DATABASE IF NOT EXISTS `ivoireaulrapps` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `ivoireaulrapps`;
+CREATE DATABASE IF NOT EXISTS `ivoireaulrtestdb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `ivoireaulrtestdb`;
 
 -- --------------------------------------------------------
 

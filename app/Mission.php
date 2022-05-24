@@ -2,13 +2,13 @@
 
 namespace App;
 
-use App\Http\Controllers\Order\Commercializable;
 use App\Interfaces\IAmortissement;
+use App\Interfaces\ICommercializableLine;
 use App\Interfaces\IMission;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Mission extends Model implements Commercializable, IAmortissement, IMission
+class Mission extends Model implements ICommercializableLine, IAmortissement, IMission
 {
     protected $table = 'mission';
     protected $guarded = [];

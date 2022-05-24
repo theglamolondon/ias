@@ -2,11 +2,11 @@
 
 namespace App;
 
-use App\Http\Controllers\Order\Commercializable;
+use App\Interfaces\ICommercializableLine;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Produit extends Model implements Commercializable
+class Produit extends Model implements ICommercializableLine
 {
 	use SoftDeletes;
 
