@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\AuthServices;
 use App\Utilisateur;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, AuthServices;
 
     /**
      * Where to redirect users after login.
@@ -61,6 +62,19 @@ class LoginController extends Controller
         return view('auth.connexion');
     }
 
+    public function loginApi(Request $request){
+      $this->login($request);
+      return response()->json($this->generateNewTokens());
+    }
+
+    public function refreshToken(Request $request){
+      try{
+        Auth::loginUsingId($this->getIdFromRefreshToken($request->bearerToken()));
+        return response()->json($this->generateNewTokens());
+      }catch (\Exception $e){
+        return response()->json([], 403);
+      }
+    }
 
     /**
      * Log the user out of the application.

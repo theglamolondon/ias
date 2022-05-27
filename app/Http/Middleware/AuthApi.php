@@ -2,20 +2,31 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\AuthServices;
 use Closure;
 use Illuminate\Http\Request;
 
 class AuthApi
 {
-    /**
-     * Handle an incoming request from react fontend.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
-    public function handle(Request $request, Closure $next)
-    {
-        return $next($request);
+  use AuthServices;
+  /**
+   * Handle an incoming request from react fontend.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+   * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+   */
+  public function handle(Request $request, Closure $next)
+  {
+    try{
+      if(!$this->verifyToken($request->bearerToken())){
+        return response()->json([], 403);
+      }
+
+      return $next($request);
+    }catch (\Exception $e){
+      return response()->json([], 403);
     }
+
+  }
 }

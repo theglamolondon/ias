@@ -12,7 +12,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('login', [\App\Http\Controllers\Auth\LoginController::class,'login']);
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class,'loginApi']);
+Route::post('/auth/token/refresh', [\App\Http\Controllers\Auth\LoginController::class,'refreshToken']);
 
 Route::prefix('factures')->middleware('auth-api')->group(function (){
 

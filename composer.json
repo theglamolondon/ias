@@ -12,7 +12,8 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "web-token/jwt-framework": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
