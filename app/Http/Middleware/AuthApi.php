@@ -19,13 +19,19 @@ class AuthApi
   public function handle(Request $request, Closure $next)
   {
     try{
-      if(!$this->verifyToken($request->bearerToken())){
-        return response()->json([], 403);
+      $token = $request->bearerToken();
+
+      if($token){
+        if(!$this->verifyToken($request->bearerToken())){
+          return response()->json(["message" => "token invalide"], 403);
+        }
+      }else{
+        return response()->json(["message" => "token mismatch"], 401);
       }
 
       return $next($request);
     }catch (\Exception $e){
-      return response()->json([], 403);
+      return response()->json(["message" => $e->getMessage()], 403);
     }
 
   }

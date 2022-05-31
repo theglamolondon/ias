@@ -44,7 +44,6 @@ trait AuthServices
     );
   }
 
-
   protected function checkClaims(array $claims){
     $claimCheckerManager = new ClaimCheckerManager(
       [
@@ -86,7 +85,7 @@ trait AuthServices
 
     $jws = $this->getJwsFromToken($token);
 
-    $this->checkClaims(json_decode($jws->getPayload()));
+    $this->checkClaims(json_decode($jws->getPayload(), true));
 
     // We verify the signature. This method does NOT check the header.
     // The arguments are:
@@ -109,7 +108,7 @@ trait AuthServices
       'iat' => time(),
       'nbf' => time(),
       'matricule' => $matricule,
-      'exp' => time() + 3600*1,
+      'exp' => time() + 3600*2,
       'iss' => "IAS API",
       'role' => $service,
       'userId' => $userId,

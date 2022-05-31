@@ -52,7 +52,11 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof NotFoundHttpException)
         {
+          if ($request->expectsJson()){
+            return response(["message" => "ressource introuvable"], 404);
+          }else{
             return response()->view("errors.404");
+          }
         }
 
         if ($exception instanceof AuthorizationException)
