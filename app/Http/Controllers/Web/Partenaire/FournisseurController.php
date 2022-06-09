@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Schema;
 
 class FournisseurController extends Controller
 {
-    use Factures;
+    use FactureServices;
 
     public function newOrder()
     {

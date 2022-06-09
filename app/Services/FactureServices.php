@@ -6,10 +6,9 @@
  * Time: 16:56
  */
 
-namespace App\Http\Controllers\Web\Partenaire;
+namespace App\Services;
 
-
-use App\Http\Controllers\Order\Commercializable;
+use App\Interfaces\ICommercializableLine;
 use App\Intervention;
 use App\Partenaire;
 use App\PieceComptable;
@@ -17,24 +16,45 @@ use App\PieceFournisseur;
 use App\Produit;
 use App\Statut;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-trait Factures
+trait FactureServices
 {
+
+  /**
+   * @param int $id
+   * @return LengthAwarePaginator
+   */
+  private function getDetailsByClientPartner(int $id) : LengthAwarePaginator{
+    $pieces = PieceComptable::with('utilisateur','moyenPaiement')
+      ->where("partenaire_id", $id);
+
+    $this->getParameters($pieces);
+
+    return $pieces->orderBy('creationproforma')
+      ->whereNotNull("referencefacture")
+      ->orderBy('creationfacture')
+      ->paginate(30);
+  }
+
+  /**
+   * @return array
+   */
 	private function getStatus(): array {
 		return [
-			Statut::PIECE_COMPTABLE_FACTURE_PAYEE => Statut::getStatut(Statut::PIECE_COMPTABLE_FACTURE_PAYEE),
+			Statut::PIECE_COMPTABLE_FACTURE_PAYEE   => Statut::getStatut(Statut::PIECE_COMPTABLE_FACTURE_PAYEE),
 			Statut::PIECE_COMPTABLE_FACTURE_ANNULEE => Statut::getStatut(Statut::PIECE_COMPTABLE_FACTURE_ANNULEE),
 			Statut::PIECE_COMPTABLE_FACTURE_AVEC_BL => Statut::getStatut(Statut::PIECE_COMPTABLE_FACTURE_AVEC_BL),
 			Statut::PIECE_COMPTABLE_FACTURE_SANS_BL => Statut::getStatut(Statut::PIECE_COMPTABLE_FACTURE_SANS_BL),
-			Statut::PIECE_COMPTABLE_BON_COMMANDE => Statut::getStatut(Statut::PIECE_COMPTABLE_BON_COMMANDE),
+			Statut::PIECE_COMPTABLE_BON_COMMANDE    => Statut::getStatut(Statut::PIECE_COMPTABLE_BON_COMMANDE),
 		];
 	}
 
 	/**
-	 * @return \Illuminate\Support\Collection|Commercializable
+	 * @return \Illuminate\Support\Collection|ICommercializableLine
 	 */
 	private function getCommercializableList()
 	{

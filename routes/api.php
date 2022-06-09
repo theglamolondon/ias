@@ -23,4 +23,5 @@ Route::prefix('factures')->middleware('auth-api')->group(function (){
 Route::prefix('partenaires')->middleware('auth-api')->group(function (){
   Route::get('/clients',[\App\Http\Controllers\Api\PartnerController::class,"listeClient"]);
   Route::get('/fournisseurs',[\App\Http\Controllers\Api\PartnerController::class,"listeFournisseur"]);
+  Route::get('/{id}/details',[\App\Http\Controllers\Api\PartnerController::class,"getPartnerDetails"]);
 });

@@ -4,30 +4,21 @@ namespace App\Http\Controllers\Web\Partenaire;
 
 use App\MoyenReglement;
 use App\Partenaire;
-use App\PieceComptable;
 use App\PieceFournisseur;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
+use App\Services\FactureServices;
+use App\Services\PartnerServices;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class DetailsController extends Controller
 {
-	use Factures;
+	use FactureServices, PartnerServices;
 
     public function ficheClient(int $id)
     {
         $partenaire = Partenaire::find($id);
-        $pieces = PieceComptable::with('utilisateur','moyenPaiement')
-                    ->where("partenaire_id", $partenaire->id);
 
-        $this->getParameters($pieces);
-
-        $pieces = $pieces->orderBy('creationproforma')
-	        ->whereNotNull("referencefacture")
-            ->orderBy('creationfacture')
-            ->paginate(30);
+        $pieces = $this->getDetailsByClientPartner($partenaire->id);
 
         $moyenReglements = MoyenReglement::all();
 
