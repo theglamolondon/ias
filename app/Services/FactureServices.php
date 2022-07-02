@@ -8,27 +8,35 @@
 
 namespace App\Services;
 
+use App\Application;
 use App\Interfaces\ICommercializableLine;
 use App\Intervention;
+use App\LignePieceComptable;
+use App\Metier\Security\Actions;
 use App\Partenaire;
 use App\PieceComptable;
 use App\PieceFournisseur;
 use App\Produit;
+use App\Service;
 use App\Statut;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 trait FactureServices
 {
+  use HelperServices;
 
   /**
    * @param int $id
    * @return LengthAwarePaginator
    */
-  private function getDetailsByClientPartner(int $id) : LengthAwarePaginator{
+  private function getDetailsByClientPartner(int $id) : LengthAwarePaginator {
     $pieces = PieceComptable::with('utilisateur','moyenPaiement')
       ->where("partenaire_id", $id);
 
@@ -71,26 +79,6 @@ trait FactureServices
 		return $commercializables;
 	}
 
-	private function updateIntervention(int $interventionId, PieceFournisseur $piece)
-	{
-		$intervention = Intervention::find($interventionId);
-		if($intervention)
-		{
-			$intervention->piecefournisseur_id = $piece->id;
-			$intervention->save();
-		}
-	}
-
-	private function updateStock(int $produit, int $qte)
-	{
-		$produit = Produit::find($produit);
-		if($produit)
-		{
-			$produit->stock += $qte;
-			$produit->save();
-		}
-	}
-
 	protected function validRequestPartner(Request $request){
 		$this->validate($request, [
 			'datepiece' => 'required|date_format:d/m/Y',
@@ -109,6 +97,146 @@ trait FactureServices
 		]);
 	}
 
+  private function validateProformaRequest(Request $request){
+    return Validator::make($request->input(),[
+      "lines.*.id" => "required|numeric",
+      "lines.*.designation" => "required",
+      "lines.*.quantite" => "required|numeric|min:1",
+      "lines.*.prixunitaire" => "required|numeric|min:5",
+      "lines.*.modele" => "required",
+      "lines.*.modele_id" => "required|numeric",
+      "lines.*.remise" => "present",
+      "partenaire_id" => "required|exists:partenaire,id",
+      "montantht" => "required|numeric",
+      "isexonere" => "required|boolean",
+      "conditions" => "required",
+      "validite" => "required",
+      "objet" => "required",
+      "delailivraison" => "required",
+    ],[
+      "conditions.required" => "Veuillez saisir les conditions SVP.",
+      "validite.required" => "Veuillez saisir la validité de l'offre.",
+      "objet.required" => "Veuillez saisir l'objet de l'offre.",
+      "delailivraison.required" => "Veuillez saisir le délai de livraison.",
+    ])->validate();
+  }
+
+  /**
+   * @param Request $request
+   *
+   * @return \Illuminate\Http\JsonResponse
+   * @throws \Throwable
+   */
+  public function creerNouvelleProforma(Request $request) {
+    $this->validateProformaRequest($request);
+
+    try{
+
+      $partenaire = new Partenaire(['id' => $request->input("partenaire_id")]);
+
+      $piececomptable = $this->createPieceComptableProforma($partenaire, collect($request->only(["montantht", "isexonere", "conditions", "validite", "delailivraison", "objet", "type_piece"])));
+
+      $this->addLineToPieceComptable($piececomptable, $request->input("lines"));
+
+      return response()->json(["reference" => urlencode($piececomptable->referenceproforma)],200, [],JSON_UNESCAPED_UNICODE);
+    }catch(\Exception $e){
+      return response()->json(["code" => 0, "message" => $e->getMessage() ],400);
+    }
+  }
+
+  /**
+   * @param Partenaire $partenaire
+   * @param Collection $data
+   * @param null $id
+   * @return PieceComptable
+   * @throws \Throwable
+   */
+  private function createPieceComptableProforma(Partenaire $partenaire, Collection $data, $id=null)
+  {
+    $piececomptable = new PieceComptable();
+
+    $piececomptable->montantht = $data->get("montantht");
+    $piececomptable->isexonere = $data->get("isexonere");
+    $piececomptable->conditions = $data->get("conditions");
+    $piececomptable->validite = $data->get("validite");
+    $piececomptable->objet = $data->get("objet");
+    $piececomptable->delailivraison = $data->get("delailivraison");
+    $piececomptable->type_piece = $data->get("type_piece");
+    $piececomptable->utilisateur_id = Auth::id();
+    $piececomptable->tva = PieceComptable::TVA;
+
+    $piececomptable->partenaire()->associate($partenaire);
+
+    if($id == null || $id == 0)
+    {
+      $piececomptable->referenceproforma = Application::getNumeroProforma(true);
+      $piececomptable->creationproforma = Carbon::now()->toDateTimeString();
+      $piececomptable->etat = Statut::PIECE_COMPTABLE_PRO_FORMA;
+    }
+
+    $piececomptable->saveOrFail();
+
+    return $piececomptable;
+  }
+
+
+  /**
+   * @param PieceComptable $pieceComptable
+   * @param array $data
+   * @return bool
+   * @throws \Throwable
+   */
+  private function addLineToPieceComptable(PieceComptable $pieceComptable, array $data)
+  {
+    foreach ($data as $ligne)
+    {
+      $lignepiece = new LignePieceComptable($ligne);
+      $lignepiece->piececomptable()->associate($pieceComptable);
+      $lignepiece->saveOrFail();
+    }
+
+    return true;
+  }
+
+  /**
+   * @param Request $request
+   * @param null | int $type
+   * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+   */
+  private function getPiecesComptable(Request $request, $type = null) {
+    $periode = $this->getPeriode($request);
+
+    $raw = PieceComptable::with("partenaire","lignes");
+
+    if($periode->get("debut") && $periode->get("fin")){
+      $raw = $raw->whereBetween("creationproforma", [
+          $periode->get("debut")->toDateString().' 00:00:00',
+          $periode->get("fin")->toDateTimeString().' 23:59:59']
+      );
+    }
+
+    if(!empty($request->query('reference'))){
+      $raw->whereRaw("( referencebc like '%{$request->query('reference')}%' OR referenceproforma like '%{$request->query('reference')}%' 
+            OR referencebl like '%{$request->query('reference')}%' OR referencefacture like '%{$request->query('reference')}%' ) ");
+    }
+
+    if($type){
+      switch ($type){
+        case PieceComptable::PRO_FORMA : $raw->where("etat", "=", Statut::PIECE_COMPTABLE_PRO_FORMA); break;
+        case PieceComptable::FACTURE : $raw->whereIn("etat", [Statut::PIECE_COMPTABLE_FACTURE_AVEC_BL, Statut::PIECE_COMPTABLE_FACTURE_SANS_BL]); break;
+
+        default : null;
+      };
+    }
+
+    if($request->has("status") && $request->input("status") != "all"){
+      $raw = $raw->where("etat","=", $request->input("status"));
+    }
+
+    $raw->orderBy("creationproforma","desc");
+
+    return $raw->paginate(30);
+  }
 	/**
 	 * @param Builder $builder
 	 */
@@ -144,4 +272,16 @@ trait FactureServices
 		}
 		return DB::select($sql)[0];
 	}
+
+  /**
+   * @param $reference
+   * @return \Illuminate\Database\Eloquent\Model|null|PieceComptable
+   */
+  private function getPieceComptableFromReference($reference)
+  {
+    return PieceComptable::with('partenaire','lignes','utilisateur')
+      ->where("referenceproforma",$reference)
+      ->orWhere("referencefacture",$reference)
+      ->firstOrFail();
+  }
 }

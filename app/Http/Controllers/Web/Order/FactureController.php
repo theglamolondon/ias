@@ -20,10 +20,10 @@ class FactureController extends Controller
 	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
 	public function listeProforma(Request $request)
-    {
-	    $this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::COMPTABILITE, Service::INFORMATIQUE, Service::LOGISTIQUE]));
-        return $this->liste($request, PieceComptable::PRO_FORMA);
-    }
+  {
+    $this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::COMPTABILITE, Service::INFORMATIQUE, Service::LOGISTIQUE]));
+      return $this->liste($request, PieceComptable::PRO_FORMA);
+  }
 
 	/**
 	 * FactureController constructor.

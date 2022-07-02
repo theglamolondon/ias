@@ -6,7 +6,7 @@
  * Time: 11:07
  */
 
-namespace App\Http\Controllers\Web\Stock;
+namespace App\Services\Products;
 
 
 use App\Famille;

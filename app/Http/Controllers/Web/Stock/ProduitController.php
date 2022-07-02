@@ -8,20 +8,19 @@ use App\Metier\Behavior\Notifications;
 use App\Metier\Security\Actions;
 use App\Produit;
 use App\Service;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
+use App\Services\ProduitServices;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
 {
-    use ProduitCrud;
+  use ProduitServices;
 
 	public function ajouter()
-    {
-        $familles = Famille::orderBy("libelle")->get();
-        return view("produit.nouveau", compact("familles"));
-    }
+  {
+      $familles = Famille::orderBy("libelle")->get();
+      return view("produit.nouveau", compact("familles"));
+  }
 
 	/**
 	 * @param Request $request
@@ -87,16 +86,16 @@ class ProduitController extends Controller
 
 	    $keyword = null;
 
-        $familles = Famille::orderBy("libelle")->get();
+      $familles = Famille::orderBy("libelle")->get();
 
-        $produits = Produit::with("famille")
-            ->orderBy("reference", 'asc');
+      $produits = Produit::with("famille")
+          ->orderBy("reference", 'asc');
 
-        $this->filter($produits, $request);
+      $this->filter($produits, $request);
 
-        $produits = $produits->paginate(25);
+      $produits = $produits->paginate(25);
 
-        return view("produit.liste", compact("produits","familles"));
+      return view("produit.liste", compact("produits","familles"));
     }
 
     public function classProduct(Request $request)
@@ -113,20 +112,6 @@ class ProduitController extends Controller
 		}
 
 	    return view("produit.ratio", compact("produits","familles", "graph"));
-    }
-
-    private function filter(Builder &$builder, Request $request)
-    {
-        if(!empty($request->query('famille')) && $request->query('famille') != "all")
-        {
-            $builder->where("famille_id", $request->query("famille"));
-        }
-
-        if(!empty($request->query('keyword')))
-        {
-            $keyword = $request->query('keyword');
-            $builder->whereRaw("( reference like '%{$keyword}%' OR libelle like '%{$keyword}%')");
-        }
     }
 
 
