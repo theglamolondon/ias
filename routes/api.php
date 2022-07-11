@@ -31,7 +31,10 @@ Route::prefix('partenaires')->middleware('auth-api')->group(function (){
 });
 //Produit
 Route::prefix('produits')->middleware('auth-api')->group(function (){
+  Route::get('/famille/liste',[\App\Http\Controllers\Api\ProductController::class,"familles"]);
   Route::get('/search',[\App\Http\Controllers\Api\ProductController::class,"recherche"]);
+  Route::get('/liste',[\App\Http\Controllers\Api\ProductController::class,"liste"]);
+  Route::get('/{reference}/details',[\App\Http\Controllers\Api\ProductController::class,"details"]);
 });
 //Vehicule
 Route::prefix('vehicules')->middleware('auth-api')->group(function (){
@@ -40,4 +43,5 @@ Route::prefix('vehicules')->middleware('auth-api')->group(function (){
 //Employe
 Route::prefix('employes')->middleware('auth-api')->group(function (){
   Route::get('/chauffeurs/liste',[\App\Http\Controllers\Api\ChauffeurController::class,"liste"]);
+  Route::get('/liste',[\App\Http\Controllers\Api\PersonnelController::class,"liste"]);
 });

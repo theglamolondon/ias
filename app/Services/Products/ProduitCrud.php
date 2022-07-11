@@ -157,10 +157,7 @@ EOF;
 
 	    $display = request()->query('display') ?? 10;
 
-
     	return DB::select($sql.$complement." GROUP BY 1,2,3,4,5,6 ORDER BY 7 DESC LIMIT $display;");
-
     }
-
 
 }

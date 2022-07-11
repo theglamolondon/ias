@@ -8,7 +8,7 @@ use App\Metier\Behavior\Notifications;
 use App\Metier\Security\Actions;
 use App\Produit;
 use App\Service;
-use App\Services\ProduitServices;
+use App\Services\Products\ProduitServices;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 

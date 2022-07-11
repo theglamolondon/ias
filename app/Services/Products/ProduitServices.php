@@ -6,7 +6,7 @@
  * Time: 18:32
  */
 
-namespace App\Services;
+namespace App\Services\Products;
 
 
 use App\Produit;
@@ -20,7 +20,7 @@ trait ProduitServices
 
   use ProduitCrud;
 
-  private function filter(Builder &$builder, Request $request)
+  private function filter(Builder $builder, Request $request) : Builder
   {
     if(!empty($request->query('famille')) && $request->query('famille') != "all")
     {
@@ -32,6 +32,17 @@ trait ProduitServices
       $keyword = $request->query('keyword');
       $builder->whereRaw("( reference like '%{$keyword}%' OR libelle like '%{$keyword}%')");
     }
+    return $builder;
+  }
+
+  private function listeProduit() : Builder{
+    $produits = Produit::with("famille")
+      ->orderBy("reference", 'asc');
+    return $produits;
+  }
+
+  private function produitDetails(string $reference){
+    return Produit::with("famille")->where("reference", $reference)->firstOrFail();
   }
 
   private function updateStock(int $produit, int $qte)

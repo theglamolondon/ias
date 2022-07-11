@@ -9,20 +9,27 @@
 namespace App\Http\Controllers\Api;
 
 
-use App\Produit;
-use App\Services\ProduitServices;
+use App\Services\Products\FamilleServices;
+use App\Services\Products\ProduitServices;
 use Illuminate\Http\Request;
 
 class ProductController
 {
-  use ProduitServices;
+  use ProduitServices, FamilleServices;
 
   public function recherche(Request $request){
-    $produits = Produit::with("famille")
-      ->orderBy("reference", 'asc');
+    return $this->filter($this->listeProduit(), $request)->paginate(15);
+  }
 
-    $this->filter($produits, $request);
+  public function liste(Request $request){
+    return $this->filter($this->listeProduit(), $request)->paginate(25);
+  }
 
-    return $produits->paginate(25);
+  public function details(string $reference) {
+    return $this->produitDetails($reference);
+  }
+
+  public function familles(){
+    return $this->getFamilles();
   }
 }
