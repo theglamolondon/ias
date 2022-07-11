@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Partenaire;
 use App\Services\FactureServices;
 use App\Services\PartnerServices;
+use Illuminate\Http\Request;
 
 class PartnerController extends Controller
 {
@@ -27,10 +28,17 @@ class PartnerController extends Controller
   }
 
   public function getPartnerDetails(int $id){
+    return Partenaire::find($id);
+  }
+
+  public function getPartnerDetailsWithOrders(int $id){
     $partenaire = Partenaire::find($id);
     return [
       "partner" => $partenaire,
       "pieces"  => $this->getDetailsByClientPartner($partenaire->id)];
   }
 
+  public function recherche(Request $request){
+    return $this->getListePartners('');
+  }
 }

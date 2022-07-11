@@ -25,9 +25,19 @@ Route::prefix('factures')->middleware('auth-api')->group(function (){
 Route::prefix('partenaires')->middleware('auth-api')->group(function (){
   Route::get('/clients',[\App\Http\Controllers\Api\PartnerController::class,"listeClient"]);
   Route::get('/fournisseurs',[\App\Http\Controllers\Api\PartnerController::class,"listeFournisseur"]);
+  Route::get('/factures/{id}/details',[\App\Http\Controllers\Api\PartnerController::class,"getPartnerDetailsWithOrders"]);
   Route::get('/{id}/details',[\App\Http\Controllers\Api\PartnerController::class,"getPartnerDetails"]);
+  Route::get('/search',[\App\Http\Controllers\Api\PartnerController::class,"recherche"]);
 });
 //Produit
 Route::prefix('produits')->middleware('auth-api')->group(function (){
   Route::get('/search',[\App\Http\Controllers\Api\ProductController::class,"recherche"]);
+});
+//Vehicule
+Route::prefix('vehicules')->middleware('auth-api')->group(function (){
+  Route::get('/search',[\App\Http\Controllers\Api\VehiculeController::class,"liste"]);
+});
+//Employe
+Route::prefix('employes')->middleware('auth-api')->group(function (){
+  Route::get('/chauffeurs/liste',[\App\Http\Controllers\Api\ChauffeurController::class,"liste"]);
 });

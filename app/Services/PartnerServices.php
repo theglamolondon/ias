@@ -11,6 +11,7 @@ namespace App\Services;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use App\Partenaire;
+use Illuminate\Http\Request;
 
 trait PartnerServices
 {
