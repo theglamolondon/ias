@@ -23,16 +23,27 @@ trait VehiculeServices
     return $this->getListeVehicule(Vehicule::VL, $vehiculesBuilder);
   }
 
+  private function getListeAll(){
+    return $this->triVehicule(Vehicule::with("genre"));
+  }
+
   private function getListeVehicule(string $type, Builder $builder){
 
-      $vehicules = $builder->join("genre","genre.id","=","vehicule.genre_id")
-        ->where("genre.categorie", "=", $type);
+    $vehicules = $builder->join("genre","genre.id","=","vehicule.genre_id")
+      ->where("genre.categorie", "=", $type);
+    return $this->triVehicule($vehicules, 15);
+  }
 
+  private function triVehicule(Builder $builder, int $page = 25){
     if(\request()->has("immatriculation") && !empty(\request()->query("immatriculation"))){
-      $vehicules = $vehicules->where("immatriculation","like","%".\request()->query("immatriculation")."%");
+      $builder = $builder->where("immatriculation","like","%".\request()->query("immatriculation")."%");
     }
 
-    return $vehicules->paginate();
+    return $builder->paginate($page);
+  }
+
+  private function getDetailsFromImmatriculation(string $immatriculation){
+    return Vehicule::with("genre","chauffeur","interventions")->where("immatriculation", $immatriculation)->firstOrFail();
   }
 
   private function updateIntervention(int $interventionId, PieceFournisseur $piece)

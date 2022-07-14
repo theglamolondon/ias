@@ -12,9 +12,16 @@ class Vehicule extends Model
     protected $table = 'vehicule';
     protected $guarded = [];
 
-    public function genre()
-    {
-        return $this->belongsTo(Genre::class);
+    public function genre(){
+      return $this->belongsTo(Genre::class);
+    }
+
+    public function chauffeur(){
+      return $this->belongsTo(Chauffeur::class);
+    }
+
+    public function interventions(){
+      return $this->hasMany(Intervention::class);
     }
 
 	/**

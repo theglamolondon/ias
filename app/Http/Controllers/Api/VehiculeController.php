@@ -20,8 +20,18 @@ class VehiculeController extends Controller
 {
   use VehiculeServices;
 
-  public function liste(Request $request){
+  public function searchVehiculeVL(Request $request){
     //$this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
     return $this->getListeVehiculeActif();
+  }
+
+  public function liste(Request $request){
+    //$this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
+    return $this->getListeAll();
+  }
+
+  public function details(string $immatriculation){
+    //$this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
+    return $this->getDetailsFromImmatriculation($immatriculation);
   }
 }

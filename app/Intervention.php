@@ -2,12 +2,12 @@
 
 namespace App;
 
-use App\Http\Controllers\Order\Commercializable;
 use App\Interfaces\IAmortissement;
+use App\Interfaces\ICommercializableLine;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Intervention extends Model implements IAmortissement, Commercializable
+class Intervention extends Model implements IAmortissement, ICommercializableLine
 {
     public $timestamps = false;
     protected $table = "intervention";

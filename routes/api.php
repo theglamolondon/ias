@@ -38,7 +38,13 @@ Route::prefix('produits')->middleware('auth-api')->group(function (){
 });
 //Vehicule
 Route::prefix('vehicules')->middleware('auth-api')->group(function (){
-  Route::get('/search',[\App\Http\Controllers\Api\VehiculeController::class,"liste"]);
+  Route::get('/search',[\App\Http\Controllers\Api\VehiculeController::class,"searchVehiculeVL"]);
+  Route::get('/liste',[\App\Http\Controllers\Api\VehiculeController::class,"liste"]);
+  Route::get('/{immatriculation}/details',[\App\Http\Controllers\Api\VehiculeController::class,"details"]);
+});
+//Mission
+Route::prefix('missions')->middleware('auth-api')->group(function (){
+  Route::get('/liste',[\App\Http\Controllers\Api\MissionController::class,"liste"]);
 });
 //Employe
 Route::prefix('employes')->middleware('auth-api')->group(function (){
