@@ -10,13 +10,13 @@ namespace App\Pdf;
 
 
 use App\PieceComptable;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 trait PdfMaker
 {
     public function test()
     {
-        $invoices = PDF::loadView('pdf.layout')->setPaper('a4','portrait');
+        $invoices = Pdf::loadView('pdf.layout')->setPaper('a4','portrait');
         //return $invoices->stream('abc.pdf');
         return view('pdf.layout');
     }
@@ -50,21 +50,21 @@ trait PdfMaker
     private function imprimerFacture($reference)
     {
         $pieceComptable = PieceComptable::with('partenaire','lignes','utilisateur.employe')->where("referencefacture",$reference)->first();
-        $invoices = PDF::loadView('pdf.facture',compact("pieceComptable"))->setPaper('a4','portrait');
+        $invoices = Pdf::loadView('pdf.facture',compact("pieceComptable"))->setPaper('a4','portrait');
         return $invoices->stream("Facture $reference {$pieceComptable->partenaire->raisonsociale}.pdf");
     }
 
     private function imprimerProForma($reference)
     {
         $pieceComptable = PieceComptable::with('partenaire','lignes','utilisateur.employe')->where("referenceproforma",$reference)->first();
-        $invoices = PDF::loadView('pdf.proforma',compact("pieceComptable"))->setPaper('a4','portrait');
+        $invoices = Pdf::loadView('pdf.proforma',compact("pieceComptable"))->setPaper('a4','portrait');
         return $invoices->stream("Facture Proforma $reference {$pieceComptable->partenaire->raisonsociale}.pdf");
     }
 
     private function imprimerBonLivraison($reference)
     {
         $pieceComptable = PieceComptable::with('partenaire','lignes','utilisateur.employe')->where("referencebl",$reference)->first();
-        $invoices = PDF::loadView('pdf.bonlivraison',compact("pieceComptable"))->setPaper('a4','portrait');
+        $invoices = Pdf::loadView('pdf.bonlivraison',compact("pieceComptable"))->setPaper('a4','portrait');
         return $invoices->stream("Bon de livraison {$pieceComptable->partenaire->raisonsociale}.pdf");
     }
 }

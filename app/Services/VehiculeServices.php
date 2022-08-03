@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Genre;
 use App\Intervention;
 use App\PieceFournisseur;
 use App\Service;
@@ -30,7 +31,7 @@ trait VehiculeServices
   private function getListeVehicule(string $type, Builder $builder){
 
     $vehicules = $builder->join("genre","genre.id","=","vehicule.genre_id")
-      ->where("genre.categorie", "=", $type);
+      ->where("genre.categorie", "=", $type)->select('vehicule.*');
     return $this->triVehicule($vehicules, 15);
   }
 
@@ -44,6 +45,10 @@ trait VehiculeServices
 
   private function getDetailsFromImmatriculation(string $immatriculation){
     return Vehicule::with("genre","chauffeur","interventions")->where("immatriculation", $immatriculation)->firstOrFail();
+  }
+
+  private function getListeGenreVéhicule(){
+    return Genre::all();
   }
 
   private function updateIntervention(int $interventionId, PieceFournisseur $piece)

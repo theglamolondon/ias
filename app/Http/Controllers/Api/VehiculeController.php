@@ -34,4 +34,8 @@ class VehiculeController extends Controller
     //$this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
     return $this->getDetailsFromImmatriculation($immatriculation);
   }
+
+  public function listeGenre(){
+    return $this->getListeGenreVéhicule();
+  }
 }

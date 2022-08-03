@@ -10,13 +10,24 @@ namespace App\Services\Personnel;
 
 
 use App\Employe;
+use Illuminate\Database\Eloquent\Builder;
 
 trait PersonnelServices
 {
 
-  public function listePersonnel() {
-    return Employe::with('service')
-      ->orderBy('nom')->orderBy('prenoms')
-      ->paginate(15);
+  public function listePersonnel($limit = 15) {
+    $builder = Employe::with('service')
+      ->orderBy('nom')->orderBy('prenoms');
+
+    $builder = $this->triPersonnel($builder);
+
+    return $builder->paginate($limit);
+  }
+
+  private function triPersonnel(Builder $builder) : Builder{
+    if(request()->has("fullname")){
+      $builder = $builder->whereRaw("CONCAT(nom, prenoms)");
+    }
+    return $builder;
   }
 }

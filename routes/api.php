@@ -41,10 +41,12 @@ Route::prefix('vehicules')->middleware('auth-api')->group(function (){
   Route::get('/search',[\App\Http\Controllers\Api\VehiculeController::class,"searchVehiculeVL"]);
   Route::get('/liste',[\App\Http\Controllers\Api\VehiculeController::class,"liste"]);
   Route::get('/{immatriculation}/details',[\App\Http\Controllers\Api\VehiculeController::class,"details"]);
+  Route::get('/genres',[\App\Http\Controllers\Api\VehiculeController::class,"listeGenre"]);
 });
 //Mission
 Route::prefix('missions')->middleware('auth-api')->group(function (){
   Route::get('/liste',[\App\Http\Controllers\Api\MissionController::class,"liste"]);
+  Route::post('/add',[\App\Http\Controllers\Api\MissionController::class,"ajouter"]);
 });
 //Employe
 Route::prefix('employes')->middleware('auth-api')->group(function (){
