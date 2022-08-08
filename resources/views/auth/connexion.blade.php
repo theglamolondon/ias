@@ -13,19 +13,19 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
     <!-- Bootstrap Core Css -->
-    <link href="{{ config("app.url") }}plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ asset("plugins/bootstrap/css/bootstrap.css")}}" rel="stylesheet">
 
     <!-- Waves Effect Css -->
-    <link href="{{ config("app.url") }}plugins/node-waves/waves.css" rel="stylesheet" />
+    <link href="{{ asset("plugins/node-waves/waves.css") }}" rel="stylesheet" />
 
     <!-- Animation Css -->
-    <link href="{{ config("app.url") }}plugins/animate-css/animate.css" rel="stylesheet" />
+    <link href="{{ asset("plugins/animate-css/animate.css") }}" rel="stylesheet" />
 
     <!-- Custom Css -->
-    <link href="{{ config("app.url") }}css/style.css" rel="stylesheet">
+    <link href="{{ asset("css/style.css") }}" rel="stylesheet">
     <style type="text/css">
         .login-page{
-            background: url("{{ config('app.url') }}images/ias/background.png") no-repeat center right #8a90ff !important;
+            background: url("{{ asset('images/ias/background.png') }}") no-repeat center right #8a90ff !important;
             /*url("http://localhost/ias/public/images/ias/background.png") no-repeat 127% -90px #8a90ff !important*/
         }
     </style>
@@ -88,20 +88,20 @@
 </div>
 
 <!-- Jquery Core Js -->
-<script src="{{ config('app.url') }}plugins/jquery/jquery.min.js"></script>
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 
 <!-- Bootstrap Core Js -->
-<script src="{{ config('app.url') }}plugins/bootstrap/js/bootstrap.js"></script>
+<script src="{{ asset('plugins/bootstrap/js/bootstrap.js') }}"></script>
 
 <!-- Waves Effect Plugin Js -->
-<script src="{{ config('app.url') }}plugins/node-waves/waves.js"></script>
+<script src="{{ asset('plugins/node-waves/waves.js') }}"></script>
 
 <!-- Validation Plugin Js -->
-<script src="{{ config('app.url') }}plugins/jquery-validation/jquery.validate.js"></script>
+<script src="{{ asset('plugins/jquery-validation/jquery.validate.js') }}"></script>
 
 <!-- Custom Js -->
-<script src="{{ config('app.url') }}js/admin.js"></script>
-<script src="{{ config('app.url') }}js/pages/examples/sign-in.js"></script>
+<script src="{{ asset('js/admin.js') }}"></script>
+<script src="{{ asset('js/pages/examples/sign-in.js') }}"></script>
 </body>
 
 </html>
