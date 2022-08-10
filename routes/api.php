@@ -40,8 +40,11 @@ Route::prefix('produits')->middleware('auth-api')->group(function (){
 Route::prefix('vehicules')->middleware('auth-api')->group(function (){
   Route::get('/search',[\App\Http\Controllers\Api\VehiculeController::class,"searchVehiculeVL"]);
   Route::get('/liste',[\App\Http\Controllers\Api\VehiculeController::class,"liste"]);
+  Route::get('/liste/disponibles',[\App\Http\Controllers\Api\VehiculeController::class,"listeDisponible"]);
+  Route::get('/liste/indisponibles',[\App\Http\Controllers\Api\VehiculeController::class,"listeIndisponible"]);
   Route::get('/{immatriculation}/details',[\App\Http\Controllers\Api\VehiculeController::class,"details"]);
   Route::get('/genres',[\App\Http\Controllers\Api\VehiculeController::class,"listeGenre"]);
+  Route::get('/reparations/liste',[\App\Http\Controllers\Api\ReparationController::class, "getListe"]);
 });
 //Mission
 Route::prefix('missions')->middleware('auth-api')->group(function (){

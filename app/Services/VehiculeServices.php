@@ -28,6 +28,12 @@ trait VehiculeServices
     return $this->triVehicule(Vehicule::with("genre"));
   }
 
+  private function getListeVehiculesByStatus(array $statuts){
+    return $this->triVehicule(
+      Vehicule::with("genre")->whereIn("status", $statuts)
+    );
+  }
+
   private function getListeVehicule(string $type, Builder $builder){
 
     $vehicules = $builder->join("genre","genre.id","=","vehicule.genre_id")

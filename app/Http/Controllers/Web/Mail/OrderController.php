@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web\Mail;
 
 use App\Application;
-use App\Http\Controllers\Order\Process;
+use App\Http\Controllers\Web\Order\Process;
 use App\Mail\FactureProforma;
 use App\Metier\Behavior\Notifications;
 use App\PieceComptable;

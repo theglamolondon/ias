@@ -25,9 +25,14 @@ class VehiculeController extends Controller
     return $this->getListeVehiculeActif();
   }
 
-  public function liste(Request $request){
+  public function listeDisponible(Request $request){
     //$this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
-    return $this->getListeAll();
+    return $this->getListeVehiculesByStatus([Statut::VEHICULE_ACTIF, Statut::VEHICULE_EN_MISSION, Statut::VEHICULE_RESERVE]);
+  }
+
+  public function listeIndisponible(Request $request){
+    //$this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
+    return $this->getListeVehiculesByStatus([Statut::VEHICULE_ENDOMAGE, Statut::VEHICULE_VENDU, Statut::VEHICULE_AU_GARAGE]);
   }
 
   public function details(string $immatriculation){
