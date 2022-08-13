@@ -45,8 +45,6 @@ class LoginController extends Controller
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -57,16 +55,27 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function showLoginForm()
     {
         return view('auth.connexion');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function loginApi(Request $request){
       $this->login($request);
       return response()->json($this->generateNewTokens());
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function refreshToken(Request $request){
       try{
         Auth::loginUsingId($this->getIdFromRefreshToken($request->bearerToken()));
@@ -100,6 +109,6 @@ class LoginController extends Controller
 
         Auth::login($user);
         Cookie::queue(Cookie::make('login',$user->login,60*24*30,"/"));
-        redirect()->route('home');
+        return redirect()->route('home');
     }
 }

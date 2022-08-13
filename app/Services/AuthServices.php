@@ -80,6 +80,7 @@ trait AuthServices
   }
 
   protected function verifyToken(string $token) : bool {
+
     // Our key.
     $jwk = self::getJwk();
 

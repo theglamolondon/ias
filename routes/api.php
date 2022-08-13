@@ -56,3 +56,7 @@ Route::prefix('employes')->middleware('auth-api')->group(function (){
   Route::get('/chauffeurs/liste',[\App\Http\Controllers\Api\ChauffeurController::class,"liste"]);
   Route::get('/liste',[\App\Http\Controllers\Api\PersonnelController::class,"liste"]);
 });
+//Settings
+Route::prefix('settings')->middleware('auth-api')->group(function (){
+  Route::get('/intervention/types',[\App\Http\Controllers\Api\SettingController::class,"listeTypeIntervention"]);
+});
