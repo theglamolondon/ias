@@ -61,7 +61,7 @@ trait VehiculeServices
     return Vehicule::with("genre","chauffeur","interventions")->where("immatriculation", $immatriculation)->firstOrFail();
   }
 
-  private function getListeGenreVéhicule(){
+  private function getListeGenreVehicule(){
     return Genre::all();
   }
 

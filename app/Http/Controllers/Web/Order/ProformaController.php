@@ -9,9 +9,11 @@ use App\Partenaire;
 use App\PieceComptable;
 use App\Produit;
 use App\Service;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
+use Illuminate\Support\MessageBag;
 
 class ProformaController extends Controller
 {
@@ -66,5 +68,41 @@ class ProformaController extends Controller
         $partenaires = $this->getPartenaireList($request);
 
         return view('order.proforma', compact("commercializables", "partenaires", "lignes", "proforma", "updateUrl"));
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
+     */
+    public function ajouter(Request $request)
+    {
+      $this->authorize(Actions::CREATE, collect([Service::DG, Service::ADMINISTRATION, Service::COMPTABILITE, Service::INFORMATIQUE, Service::LOGISTIQUE]));
+
+      $this->validateProformaRequest($request);
+
+      try{
+
+        $partenaire = new Partenaire(['id' => $request->input("partenaire_id")]);
+
+        $piececomptable = $this->createPieceComptable(PieceComptable::PRO_FORMA, $partenaire, collect($request->only(["montantht", "isexonere", "conditions", "validite", "delailivraison", "objet", "type_piece"])));
+
+        $this->addLineToPieceComptable($piececomptable, $request->input("lines"));
+
+        $notification = new Notifications();
+        $notification->add(Notifications::SUCCESS,"Votre proforma n° $piececomptable->referenceproforma a été prise en compte.");
+
+        return response()->json([
+          "code" => 1,
+          "message" => "Nouvelle pro forma référence $piececomptable->referenceproforma enregistrée avec succès !",
+          "action" => route("facturation.envoie.emailchoice",["reference" => urlencode($piececomptable->referenceproforma)])
+        ],200, [],JSON_UNESCAPED_UNICODE);
+
+      }catch(\Exception $e){
+
+        return response()->json(["code" => 0, "message" => $e->getMessage() ],400);
+
+      }
     }
 }
