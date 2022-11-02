@@ -31,7 +31,7 @@ Route::get('/', [\App\Http\Controllers\HomeController::class,'index']);
 Route::get('/checking',[\App\Http\Controllers\HomeController::class,'checkState'])->name('rappel');
 Route::get('/update/run', [\App\Http\Controllers\Web\Core\IasUpdate::class,'runUpdate'])->name('maj');
 
-//Véhicules
+  //Véhicules
 Route::prefix('vehicules')->middleware('auth')->group(function (){
     Route::get('liste.html',[\App\Http\Controllers\Web\Car\RegisterController::class,"index"])->name('vehicule.liste');
     Route::get('nouveau.html',[\App\Http\Controllers\Web\Car\RegisterController::class,'showNewFormView'])->name('vehicule.nouveau');
