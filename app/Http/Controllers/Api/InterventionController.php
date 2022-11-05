@@ -14,11 +14,25 @@ use App\Services\InterventionServices;
 use App\Services\ReparationServices;
 use Illuminate\Http\Request;
 
-class ReparationController extends Controller
+class InterventionController extends Controller
 {
   use ReparationServices;
 
   public function getListe(Request $request){
     return $this->getListeAll($request, 20);
   }
+
+    public function Add(Request $request)
+    {
+        return $this->DoReparation($request);
+    }
+
+    public function addType(Request $request){
+        return $this->addTypeIntervention($request);
+
+    }
+
+    public function getVehiculeIntervention(Request $request){
+      return $this->getVehiculeInterventions();
+    }
 }

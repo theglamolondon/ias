@@ -44,12 +44,18 @@ Route::prefix('vehicules')->middleware('auth-api')->group(function (){
   Route::get('/liste/indisponibles',[\App\Http\Controllers\Api\VehiculeController::class,"listeIndisponible"]);
   Route::get('/{immatriculation}/details',[\App\Http\Controllers\Api\VehiculeController::class,"details"]);
   Route::get('/genres',[\App\Http\Controllers\Api\VehiculeController::class,"listeGenre"]);
-  Route::get('/reparations/liste',[\App\Http\Controllers\Api\ReparationController::class, "getListe"]);
+  Route::get('/reparations/liste',[\App\Http\Controllers\Api\InterventionController::class, "getListe"]);
+  Route::post('/ajout',[\App\Http\Controllers\Api\VehiculeController::class,"add"]);
+  Route::put('/update/{immatriculation}',[\App\Http\Controllers\Api\VehiculeController::class,"modified"]);
+  Route::get('/interventions',[\App\Http\Controllers\Api\InterventionController::class,"getListe"]);
+  Route::post('/nouvelle/intervention',[\App\Http\Controllers\Api\InterventionController::class,"Add"]);
+  Route::post('/type/intervention',[\App\Http\Controllers\Api\InterventionController::class,"addType"]);
 });
 //Mission
 Route::prefix('missions')->middleware('auth-api')->group(function (){
   Route::get('/liste',[\App\Http\Controllers\Api\MissionController::class,"liste"]);
   Route::post('/add',[\App\Http\Controllers\Api\MissionController::class,"ajouter"]);
+  Route::put('/add',[\App\Http\Controllers\Api\MissionController::class,"ajouter"]);
 });
 //Employe
 Route::prefix('employes')->middleware('auth-api')->group(function (){
@@ -59,4 +65,10 @@ Route::prefix('employes')->middleware('auth-api')->group(function (){
 //Settings
 Route::prefix('settings')->middleware('auth-api')->group(function (){
   Route::get('/intervention/types',[\App\Http\Controllers\Api\SettingController::class,"listeTypeIntervention"]);
+});
+
+//Interventions
+Route::prefix('interventions')->middleware('auth-api')->group(function (){
+
+
 });

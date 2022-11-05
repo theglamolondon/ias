@@ -36,7 +36,7 @@ trait AuthServices
 
   private static function getJwk() : JWK{
     return JWKFactory::createFromSecret(
-      env("JWT_SECRET","abcdefghijklmnopqrst,nsddhgdhdsghsgdhgdhgdshsdgsdhjgds"),       // The shared secret
+      "abcdefghijklmnopqrst,nsddhgdhdsghsgdhgdhgdshsdgsdhjgds",       // The shared secret
       [                             // Optional additional members
         'alg' => 'HS256',
         'use' => 'sig'
