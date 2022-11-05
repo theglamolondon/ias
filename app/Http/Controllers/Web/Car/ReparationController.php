@@ -8,15 +8,17 @@ use App\Metier\Security\Actions;
 use App\Partenaire;
 use App\Service;
 use App\TypeIntervention;
+use App\Services\ReparationServices;
 use App\Vehicule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\MessageBag;
 
 class ReparationController extends Controller
 {
-	use Interventions;
+	use ReparationServices, Interventions;
 	/**
 	 * @param Request $request
 	 *
@@ -111,33 +113,15 @@ class ReparationController extends Controller
 	 */
     public function ajouter(Request $request)
     {
-    	$this->authorize(Actions::CREATE, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE,
-		    Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
+        $this->authorize(Actions::CREATE, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE,
+            Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
+    	return $this->DoReparation($request);
 
-	    $this->validate($request, $this->validateRules()[0], $this->validateRules()[1]);
-
-        $intervention = new Intervention($request->except("_token", "vehicule"));
-        $intervention->debut = Carbon::createFromFormat("d/m/Y", $request->input("debut"))->toDateTimeString();
-        $intervention->fin = Carbon::createFromFormat("d/m/Y", $request->input("fin"))->toDateTimeString();
-
-        if($request->input("partenaire_id") == -1)
-        {
-        	$intervention->partenaire_id = null;
-        }
-
-        $intervention->saveOrFail();
-
-        $notification = new Notifications();
-        $notification->add(Notifications::SUCCESS,"Nouvelle intervention enregistrée avec succès");
-
-        return redirect()->route("reparation.liste")->with(Notifications::NOTIFICATION_KEYS_SESSION, $notification);
     }
 
 
     public function details(int $id){
-
     	$intervention = Intervention::with("typeIntervention","vehicule", "partenaire", "pieceFournisseur")->find($id);
-
     	if($intervention == null){
     		return redirect()->back()->withErrors("Intervention introuvable");
 	    }
@@ -145,16 +129,9 @@ class ReparationController extends Controller
     	return view("car.intervention.details", compact("intervention"));
     }
 
-	public function addType(){
 
-		$this->validate(request(), ["libelle" => "required"]);
+	public function addType(Request $request){
+		return $this->addTypeIntervention($request);
 
-		$type = new TypeIntervention();
-		$type->libelle = request()->input("libelle");
-		$type->save();
-
-		$notification = new Notifications();
-		$notification->add(Notifications::SUCCESS,"Nouveau type d'intervention ajouté avec succès");
-		return redirect()->back()->with(Notifications::NOTIFICATION_KEYS_SESSION, $notification);
 	}
 }

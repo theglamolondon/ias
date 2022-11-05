@@ -14,6 +14,7 @@ use App\Metier\Security\Actions;
 use App\Service;
 use App\Services\VehiculeServices;
 use App\Statut;
+use App\Vehicule;
 use Illuminate\Http\Request;
 
 class VehiculeController extends Controller
@@ -43,4 +44,42 @@ class VehiculeController extends Controller
   public function listeGenre(){
     return $this->getListeGenreVéhicule();
   }
+
+  public function add(Request $request){
+      #dd($request);
+  return $this->ajouter($request);
+
+  }
+
+  public function modified(string $immatriculation, Request $request){
+      return $this->update($request);
+
+  }
+
+
+    /**
+     * @return array
+     */
+    protected function validateRules($withID = false)
+    {
+        $rules = [
+            'immatriculation' =>'required|regex:/([0-9]{1,4})([A-Z]{2})([0-2]{2})/',
+            'genre_id' => 'required|numeric|exists:genre,id',
+            'cartegrise' => 'required',
+            'marque' => 'required',
+            'typecommercial' => 'present',
+            'couleur' => 'required',
+            'energie' => 'required',
+            'nbreplace' => 'required|numeric',
+            'puissancefiscale' => 'present',
+            'dateachat' => "required|date_format:d/m/Y",
+            'coutachat' => "required|numeric",
+            'chauffeur_id' => "required|exists:chauffeur,employe_id",
+        ];
+
+        if($withID){
+            $rules['id'] = 'required|numeric';
+        }
+        return $rules;
+    }
 }

@@ -17,16 +17,7 @@ trait InterventionServices
 {
 
 
-  /**
-   * @param Model|Vehicule $vehicule
-   * @return \Illuminate\Database\Eloquent\Collection|static[]
-   */
-  private function getVehiculeInterventions(Vehicule $vehicule)
-  {
-    return Intervention::with("typeIntervention")
-      ->where("vehicule_id", $vehicule->id)
-      ->select("intervention.*","debut as date_")
-      ->get();
-  }
+
+
 
 }
