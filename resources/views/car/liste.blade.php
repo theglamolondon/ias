@@ -81,7 +81,7 @@
                         @endforeach
                         </tbody>
                     </table>
-                    {{ $vehicules->appends(request()->except([]))->links() }}
+                    {{ $vehicules->appends(request()->except([]))->links('vendor.pagination.default') }}
                 </div>
             </div>
         </div>

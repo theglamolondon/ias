@@ -93,7 +93,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{ $lignes->links() }}
+                            {{ $lignes->links('vendor.pagination.default') }}
                         </div>
                     </div>
                 </div>
