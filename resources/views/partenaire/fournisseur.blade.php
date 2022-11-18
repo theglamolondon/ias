@@ -105,7 +105,7 @@ $rap = 0;
                         @endif
                         </tbody>
                     </table>
-                    {{ $pieces->appends(request()->except([]))->links() }}
+                    {{ $pieces->appends(request()->except([]))->links('vendor.pagination.default') }}
                 </div>
             </div>
         </div>

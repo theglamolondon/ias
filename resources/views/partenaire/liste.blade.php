@@ -78,7 +78,7 @@
                         </tbody>
                     </table>
 
-                    {{ $partenaires->appends(request()->except([]))->links() }}
+                    {{ $partenaires->appends(request()->except([]))->links('vendor.pagination.default') }}
                 </div>
             </div>
         </div>
