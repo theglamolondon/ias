@@ -8,6 +8,7 @@ use App\Metier\Security\Actions;
 use App\MissionPL;
 use App\Partenaire;
 use App\Service;
+use App\Services\MissionPLServices;
 use App\Statut;
 use App\Vehicule;
 use Carbon\Carbon;
@@ -16,7 +17,7 @@ use App\Http\Controllers\Controller;
 
 class PlController extends Controller
 {
-	use Process;
+	use Process, MissionPLServices;
 
 	/**
 	 * @param Request $request
@@ -49,25 +50,11 @@ class PlController extends Controller
 		$this->authorize(Actions::READ, collect([Service::DG, Service::INFORMATIQUE,
 			Service::COMPTABILITE, Service::GESTIONNAIRE_PL]));
 
-		$this->validate($request, $this->validateMissionPL());
-		$missionPL = $this->createPL($request);
-
-		$notification = new Notifications();
-		$notification->add(Notifications::SUCCESS,"Votre mission a été prise en compte. Voulez aller définir le bon de commande");
-
-		$request->session()->put(Notifications::MISSION_OBJECT, $missionPL);
-
-		return redirect()->route("mission.liste-pl")->with(Notifications::NOTIFICATION_KEYS_SESSION, $notification);
+           return $this->ajouterPoidLourd($request);
 	}
 
 	private function createPL(Request $request)
 	{
-		$data = $request->except("_token");
-		$this->generateCodeMission($data);
-
-		$data["status"] = Statut::MISSION_COMMANDEE;
-		$data["datedebut"] = Carbon::createFromFormat("d/m/Y",$request->input("datedebut"))->toDateString();
-
-		return MissionPL::create($data);
+		return $this->createPoidLourd($request);
 	}
 }

@@ -25,4 +25,6 @@ trait MissionServices
     }
     return $builder->paginate(25);
   }
+
+
 }
