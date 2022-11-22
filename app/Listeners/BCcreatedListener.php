@@ -46,7 +46,7 @@ class BCcreatedListener
 		        ->send(new BCAlert($event->BC));
 
 	    }catch (\Exception $e){
-    		dd($e->getMessage());
+    		logger($e->getMessage());
 	    }
     }
 }
