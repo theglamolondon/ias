@@ -204,7 +204,7 @@ trait FactureServices
    * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
    */
   private function getPiecesComptable(Request $request, $type = null) {
-    $periode = $this->getPeriode($request);
+    $periode = $this->getPeriodeFromRequest($request);
 
     $raw = PieceComptable::with("partenaire","lignes");
 
