@@ -14,6 +14,7 @@ use App\PieceFournisseur;
 use App\Produit;
 use App\Service;
 use App\Services\FactureServices;
+use App\Services\Products\ProduitServices;
 use App\Statut;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 
 class FournisseurController extends Controller
 {
-    use FactureServices;
+    use FactureServices, ProduitServices;
 
     public function newOrder()
     {

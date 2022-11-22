@@ -18,7 +18,7 @@ trait HelperServices
    * @param Request $request
    * @return \Illuminate\Support\Collection
    */
-  private function getPeriode(Request $request)
+  private function getPeriodeFromRequest(Request $request)
   {
     $debut = null;
     $fin = null;
