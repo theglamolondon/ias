@@ -4,21 +4,26 @@ namespace App\Http\Controllers\Web\Mission;
 
 use App\Chauffeur;
 use App\Mail\MissionReminder;
+use App\Metier\Behavior\Notifications;
 use App\Metier\Security\Actions;
 use App\Mission;
+use App\Partenaire;
 use App\Service;
+use App\Services\MissionServices;
 use App\Statut;
 use App\Utilisateur;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\MessageBag;
 
 class MissionController extends Controller
 {
-    use Process;
+    use MissionServices;
 
     /**
      * @var Carbon $debut_periode
@@ -73,22 +78,13 @@ class MissionController extends Controller
         return view("mission.vl.liste",compact("missions", "debut", "fin", "chauffeurs", "status"));
     }
 
-	/**
-	 * @param $reference
-	 *
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-	 * @throws \Illuminate\Auth\Access\AuthorizationException
-	 */
+
     public function details($reference)
     {
 	    $this->authorize(Actions::READ, collect([Service::DG, Service::INFORMATIQUE,
 		    Service::ADMINISTRATION, Service::COMPTABILITE, Service::GESTIONNAIRE_VL]));
 
-        $mission = $this->missionBuilder()
-            ->where("code",$reference)
-            ->firstOrFail();
-
-        return view("mission.vl.details",compact("mission"));
+      return $this->detailsMission($reference);
     }
 
     public function reminder()
@@ -140,5 +136,110 @@ class MissionController extends Controller
 	    $collection->put('cc', $cc);
 
 	    return $collection;
+    }
+
+
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function nouvelle(Request $request)
+    {
+        $this->authorize(Actions::READ, collect([Service::DG, Service::INFORMATIQUE,
+            Service::ADMINISTRATION, Service::COMPTABILITE, Service::GESTIONNAIRE_VL]));
+
+        $vehicules = $this->listeVehiculeSelection($request);
+
+        $chauffeurs = Chauffeur::with('employe')->get();
+
+        $partenaires = Partenaire::where("isclient",true)
+            ->orderBy("raisonsociale")
+            ->get();
+
+        return view('mission.vl.nouvelle',compact('vehicules','chauffeurs', "partenaires"));
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function ajouter(Request $request)
+    {
+        $this->authorize(Actions::READ, collect([Service::DG, Service::INFORMATIQUE,
+            Service::ADMINISTRATION, Service::COMPTABILITE, Service::GESTIONNAIRE_VL]));
+
+        return $this->ajouterMission($request);
+    }
+
+
+
+    /**
+     * @param $reference
+     * @param Request $request
+     *
+     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function modifier($reference, Request $request)
+    {
+        $this->authorize(Actions::READ, collect([Service::DG, Service::INFORMATIQUE,
+            Service::ADMINISTRATION, Service::COMPTABILITE, Service::GESTIONNAIRE_VL]));
+        try {
+            $mission = $this->missionBuilder()
+                ->where("code", $reference)
+                ->firstOrFail();
+
+            if(! empty($mission->piececomptable_id) || $mission->status != Statut::MISSION_COMMANDEE)
+                return back()->withErrors("Impossible de modifier la mission #{$reference}. Celle-ci a déjà fait l'objet de facture ou son statut à changé.");
+
+        }catch (ModelNotFoundException $e){
+            return back()->withErrors("La mission référencée est introuvable, vous l'avaez peut-être supprimée");
+        }
+
+        $vehicules = $this->listeVehiculeSelection($request);
+
+        $chauffeurs = Chauffeur::with('employe')->get();
+
+        $partenaires = Partenaire::where("isclient",true)
+            ->orderBy("raisonsociale")
+            ->get();
+
+        return view("mission.vl.modifier", compact('vehicules','chauffeurs', "partenaires", "mission"));
+    }
+
+
+    /**
+     * @param Request $request
+     * @param string $reference
+     *
+     */
+    public function update($reference, Request $request)
+    {
+        $this->authorize(Actions::READ, collect([Service::DG, Service::INFORMATIQUE,
+            Service::ADMINISTRATION, Service::COMPTABILITE, Service::GESTIONNAIRE_VL]));
+
+       return $this->updateMission($reference, $request);
+    }
+
+
+
+    /**
+     * @param Request $request
+     * @param string $reference
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Throwable
+     */
+
+    public function updateAfterStart(Request $request, string $reference)
+    {
+        $this->authorize(Actions::READ, collect([Service::DG, Service::INFORMATIQUE,
+            Service::ADMINISTRATION, Service::COMPTABILITE, Service::GESTIONNAIRE_VL]));
+
+       return $this->updateAfterStartMission($request,$reference);
     }
 }

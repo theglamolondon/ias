@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Metier\Security\Actions;
 use App\Service;
 use App\Services\Personnel\PersonnelServices;
+use Illuminate\Http\Request;
 
 class PersonnelController extends Controller
 {
@@ -24,5 +25,27 @@ class PersonnelController extends Controller
 
     return $this->listePersonnel();
   }
+
+    public function fiche($matricule)
+    {
+           //$this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::GESTIONNAIRE_VL,
+           // Service::GESTIONNAIRE_PL, Service::COMPTABILITE, Service::INFORMATIQUE]));
+        return $this->fichePersonnel($matricule);
+    }
+
+    public function register(Request $request)
+    {
+           //$this->authorize(Actions::CREATE, collect([Service::DG, Service::ADMINISTRATION, Service::GESTIONNAIRE_VL,
+           // Service::GESTIONNAIRE_PL, Service::COMPTABILITE, Service::INFORMATIQUE]));
+        return $this->registerPersonnel($request);
+    }
+
+    public function update(Request $request, $matricule)
+    {
+        $this->authorize(Actions::UPDATE, collect([Service::DG, Service::ADMINISTRATION, Service::GESTIONNAIRE_VL,
+            Service::GESTIONNAIRE_PL, Service::COMPTABILITE, Service::INFORMATIQUE]));
+
+        return $this->updatePersonnel($request, $matricule);
+    }
 
 }
