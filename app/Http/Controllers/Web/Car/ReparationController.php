@@ -134,4 +134,8 @@ class ReparationController extends Controller
 		return $this->addTypeIntervention($request);
 
 	}
+
+    public function getVehiculeIntervention(Request $request, Vehicule $vehicule){
+        return $this->getVehiculeInterventions($request, $vehicule);
+    }
 }

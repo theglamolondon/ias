@@ -48,6 +48,7 @@ Route::prefix('vehicules')->middleware('auth-api')->group(function (){
   Route::post('/ajout',[\App\Http\Controllers\Api\VehiculeController::class,"add"]);
   Route::put('/update/{immatriculation}',[\App\Http\Controllers\Api\VehiculeController::class,"modified"]);
   Route::get('/interventions',[\App\Http\Controllers\Api\InterventionController::class,"getListe"]);
+  Route::get('/interventions/{vehicule}',[\App\Http\Controllers\Api\InterventionController::class,"getVehiculeIntervention"]);
   Route::post('/nouvelle/intervention',[\App\Http\Controllers\Api\InterventionController::class,"Add"]);
   Route::post('/type/intervention',[\App\Http\Controllers\Api\InterventionController::class,"addType"]);
 });
@@ -55,20 +56,33 @@ Route::prefix('vehicules')->middleware('auth-api')->group(function (){
 Route::prefix('missions')->middleware('auth-api')->group(function (){
   Route::get('/liste',[\App\Http\Controllers\Api\MissionController::class,"liste"]);
   Route::post('/add',[\App\Http\Controllers\Api\MissionController::class,"ajouter"]);
-  Route::put('/add',[\App\Http\Controllers\Api\MissionController::class,"ajouter"]);
+  Route::get('/details/{reference}',[\App\Http\Controllers\Api\MissionController::class,"details"]);
+  Route::post('/ajout',[\App\Http\Controllers\Api\MissionController::class,"addMission"]);
+  Route::put('/update/{reference}',[\App\Http\Controllers\Api\MissionController::class,"update"]);
+  Route::post('pl/{reference}',[\App\Http\Controllers\Api\MissionController::class,'updateMissionAfterStart']);
+  Route::get('vl/{reference}/{statut}/',[\App\Http\Controllers\Api\MissionController::class,'changeStatus'])->name('mission.changer-statut');
+
 });
 //Employe
 Route::prefix('employes')->middleware('auth-api')->group(function (){
   Route::get('/chauffeurs/liste',[\App\Http\Controllers\Api\ChauffeurController::class,"liste"]);
+  Route::post('chauffeurs/add',[\App\Http\Controllers\Api\ChauffeurController::class,'register']);
   Route::get('/liste',[\App\Http\Controllers\Api\PersonnelController::class,"liste"]);
+  Route::get('chauffeurs/{matricule}',[\App\Http\Controllers\Api\ChauffeurController::class,'situation']);
+  Route::post('/add',[\App\Http\Controllers\Api\PersonnelController::class,'register']);
+  Route::get('employe/{matricule}',[\App\Http\Controllers\Api\PersonnelController::class,'fiche']);
+  Route::post('/{matricule}/update',[\App\Http\Controllers\Api\PersonnelController::class,'update']);
 });
 //Settings
 Route::prefix('settings')->middleware('auth-api')->group(function (){
-  Route::get('/intervention/types',[\App\Http\Controllers\Api\SettingController::class,"listeTypeIntervention"]);
+    Route::get('/intervention/types',[\App\Http\Controllers\Api\SettingController::class,"listeTypeIntervention"]);
 });
 
-//Interventions
-Route::prefix('interventions')->middleware('auth-api')->group(function (){
+//Administration user
+Route::prefix('administration')->middleware('auth-api')->group(function (){
+    Route::get('utilisateurs',[\App\Http\Controllers\Api\UtilisateurController::class,'getListe']);
+    Route::post('utilisateur/add',[\App\Http\Controllers\Api\UtilisateurController::class,'register']);
+    Route::post('utilisateur/password/reset', [\App\Http\Controllers\Api\UtilisateurController::class,'reset']);
 
 
 });

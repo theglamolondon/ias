@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\InterventionServices;
 use App\Services\ReparationServices;
+use App\Vehicule;
 use Illuminate\Http\Request;
 
 class InterventionController extends Controller
@@ -32,7 +33,7 @@ class InterventionController extends Controller
 
     }
 
-    public function getVehiculeIntervention(Request $request){
-      return $this->getVehiculeInterventions();
+    public function getVehiculeIntervention(Request $request, Vehicule $vehicule){
+      return $this->getVehiculeInterventions($request, $vehicule);
     }
 }
