@@ -90,9 +90,9 @@
                         </tbody>
                     </table>
                     @if(request()->query("keyword"))
-                        {{ $produits->appends(["keyword" => request()->query("keyword")])->links() }}
+                        {{ $produits->appends(["keyword" => request()->query("keyword")])->links('vendor.pagination.default') }}
                     @else
-                        {{ $produits->appends(request()->except([]))->links() }}
+                        {{ $produits->appends(request()->except([]))->links('vendor.pagination.default') }}
                     @endif
                 </div>
             </div>

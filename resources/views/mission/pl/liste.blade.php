@@ -141,7 +141,7 @@
                         @endforeach
                         </tbody>
                     </table>
-                    {{ $missions->appends(request()->except([]))->links() }}
+                    {{ $missions->appends(request()->except([]))->links('vendor.pagination.default') }}
                 </div>
             </div>
         </div>

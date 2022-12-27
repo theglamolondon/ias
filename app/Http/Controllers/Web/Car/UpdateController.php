@@ -7,6 +7,7 @@ use App\Genre;
 use App\Metier\Processing\VehiculeManager;
 use App\Metier\Security\Actions;
 use App\Service;
+use App\Services\VehiculeServices;
 use App\Statut;
 use App\Vehicule;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ use App\Http\Controllers\Controller;
 
 class UpdateController extends Controller
 {
-    use VehiculeManager;
+    use VehiculeServices;
 
 	/**
 	 * @param string $immatriculation

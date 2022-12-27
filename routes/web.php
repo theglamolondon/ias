@@ -11,6 +11,7 @@
 |
 */
 
+
 // Authentication Routes...
 Route::get('login', [\App\Http\Controllers\Auth\LoginController::class,'showLoginForm'])->name('login');
 Route::post('login', [\App\Http\Controllers\Auth\LoginController::class,'login']);
@@ -42,24 +43,24 @@ Route::prefix('vehicules')->middleware('auth')->group(function (){
     Route::get('interventions/nouvelle.html',[\App\Http\Controllers\Web\Car\ReparationController::class,'nouvelle'])->name("reparation.nouvelle");
     Route::post('interventions/nouvelle.html',[\App\Http\Controllers\Web\Car\ReparationController::class,'ajouter']);
 	Route::post("interventions/types/add",[\App\Http\Controllers\Web\Car\ReparationController::class,'addType'])->name('reparation.type.add');
-	Route::get("interventions/{id}/details.html",[\App\Http\Controllers\Web\Car\ReparationController::class,"@details"])->name('reparation.details');
+	Route::get("interventions/{id}/details.html",[\App\Http\Controllers\Web\Car\ReparationController::class,"details"])->name('reparation.details');
     Route::get("{immatriculation}/details.html",[\App\Http\Controllers\Web\Car\FicheController::class,'details'])->name("vehicule.details");
 });
 
 //Missions
 Route::prefix('missions')->middleware('auth')->group(function (){
-    Route::get('vl/nouvelle.html',[\App\Http\Controllers\Web\Mission\CreateController::class,'nouvelle'])->name('mission.nouvelle');
-	Route::post('vl/nouvelle.html',[\App\Http\Controllers\Web\Mission\CreateController::class,'ajouter']);
+    Route::get('vl/nouvelle.html',[\App\Http\Controllers\Web\Mission\MissionController::class,'nouvelle'])->name('mission.nouvelle');
+	Route::post('vl/nouvelle.html',[\App\Http\Controllers\Web\Mission\MissionController::class,'ajouter']);
     Route::get('pl/nouvelle-pl.html',[\App\Http\Controllers\Web\Mission\PlController::class,'nouvellePL'])->name('mission.nouvelle-pl');
-    Route::post('pl/nouvelle.html', [\App\Http\Controllers\Web\Mission\PlController::class,'ajouterPL']);
+    Route::post('pl/nouvelle-pl.html', [\App\Http\Controllers\Web\Mission\PlController::class,'ajouterPL']);
     Route::get('vl/liste.html', [\App\Http\Controllers\Web\Mission\MissionController::class,'liste'])->name('mission.liste');
     Route::get('pl/liste.html',[\App\Http\Controllers\Web\Mission\MissionPlController::class,'listePL'])->name('mission.liste-pl');
     Route::get('vl/{reference}/details.html',[\App\Http\Controllers\Web\Mission\MissionController::class,'details'])->name('mission.details');
-    Route::post('vl/{reference}/details.html',[\App\Http\Controllers\Web\Mission\UpdateController::class,'updateAfterStart']);
+    Route::post('vl/{reference}/details.html',[\App\Http\Controllers\Web\Mission\MissionController::class,'updateAfterStart']);
 	Route::get('pl/{reference}/details.html',[\App\Http\Controllers\Web\Mission\MissionPlController::class,'details'])->name('mission.details-pl');
 	Route::post('pl/{reference}/details.html',[\App\Http\Controllers\Web\Mission\UpdatePLController::class,'updateAfterStart']);
-    Route::get('vl/{reference}/modifier.html',[\App\Http\Controllers\Web\Mission\UpdateController::class,'modifier'])->name('mission.modifier');
-    Route::post('vl/{reference}/modifier.html',[\App\Http\Controllers\Web\Mission\UpdateController::class,'update']);
+    Route::get('vl/{reference}/modifier.html',[\App\Http\Controllers\Web\Mission\MissionController::class,'modifier'])->name('mission.modifier');
+    Route::post('vl/{reference}/modifier.html',[\App\Http\Controllers\Web\Mission\MissionController::class,'update']);
 	Route::get('pl/{reference}/modifier.html',[\App\Http\Controllers\Web\Mission\UpdatePLController::class,'modifier'])->name('mission.modifier-pl');
 	Route::post('pl/{reference}/modifier.html',[\App\Http\Controllers\Web\Mission\UpdatePLController::class,'update']);
     Route::get('vl/{reference}/{statut}/changer-statut.html',[\App\Http\Controllers\Web\Mission\MissionController::class,'changeStatus'])->name('mission.changer-statut');

@@ -13,17 +13,17 @@ use App\Partenaire;
 use App\PieceFournisseur;
 use App\Produit;
 use App\Service;
+use App\Services\FactureServices;
+use App\Services\Products\ProduitServices;
 use App\Statut;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
 
 class FournisseurController extends Controller
 {
-    use FactureServices;
+    use FactureServices, ProduitServices;
 
     public function newOrder()
     {

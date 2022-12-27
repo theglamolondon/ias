@@ -14,6 +14,7 @@ use App\Metier\Security\Actions;
 use App\Service;
 use App\Services\VehiculeServices;
 use App\Statut;
+use App\Vehicule;
 use Illuminate\Http\Request;
 
 class VehiculeController extends Controller
@@ -41,6 +42,15 @@ class VehiculeController extends Controller
   }
 
   public function listeGenre(){
-    return $this->getListeGenreVéhicule();
+    return $this->getListeGenreVehicule();
+  }
+
+  public function add(Request $request){
+    #dd($request);
+    return $this->ajouter($request);
+  }
+
+  public function modified(string $immatriculation, Request $request){
+      return $this->update($request);
   }
 }

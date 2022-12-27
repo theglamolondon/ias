@@ -68,7 +68,7 @@
                             </tbody>
                         </table>
 
-                        {{ $employes->appends(request()->except([]))->links() }}
+                        {{ $employes->appends(request()->except([]))->links('vendor.pagination.default') }}
                     </div>
                 </div>
             </div>

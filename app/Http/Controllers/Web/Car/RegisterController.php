@@ -7,6 +7,7 @@ use App\Genre;
 use App\Metier\Processing\VehiculeManager;
 use App\Metier\Security\Actions;
 use App\Service;
+use App\Services\VehiculeServices;
 use App\Statut;
 use App\Vehicule;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    use VehiculeManager;
+    use VehiculeServices;
 
 	/**
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

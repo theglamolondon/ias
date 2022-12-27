@@ -84,7 +84,7 @@
                                 </div>
                             </td>
                             <td>{{ $salaire->annee }}</td>
-                            <td>{{ \App\Http\Controllers\RH\SalaireController::getMonthsById($salaire->mois) }}</td>
+                            <td>{{ App\Http\Controllers\Web\RH\SalaireController::getMonthsById($salaire->mois) }}</td>
                             <td>{{ \App\Salaire::getStateToString($salaire->statut) }}</td>
                         </tr>
                         @endforeach
