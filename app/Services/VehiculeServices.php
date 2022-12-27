@@ -17,6 +17,7 @@ use App\Statut;
 use App\Vehicule;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ trait VehiculeServices
     return Vehicule::with("genre","chauffeur","interventions")->where("immatriculation", $immatriculation)->firstOrFail();
   }
 
-  private function getListeGenreVehicule(){
+  private function getListeGenreVehicule() : Collection{
     return Genre::all();
   }
 
@@ -145,9 +146,12 @@ trait VehiculeServices
             'chauffeur_id' => "required|exists:chauffeur,employe_id",
         ];
 
+        //if(request()->)
+
         if($withID){
             $rules['id'] = 'required|numeric';
         }
+
         return $rules;
     }
 
