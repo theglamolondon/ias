@@ -10,8 +10,10 @@ use App\Service;
 use App\Services\VehiculeServices;
 use App\Statut;
 use App\Vehicule;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 
 class UpdateController extends Controller
 {
@@ -20,7 +22,7 @@ class UpdateController extends Controller
 	/**
 	 * @param string $immatriculation
 	 *
-	 * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 * @return $this|\Illuminate\Contracts\View\Factory|RedirectResponse
 	 * @throws \Illuminate\Auth\Access\AuthorizationException
 	 */
     public function modifier(string $immatriculation)
@@ -42,6 +44,9 @@ class UpdateController extends Controller
 	        	Statut::VEHICULE_ACTIF => Statut::getStatut(Statut::VEHICULE_ACTIF),
 	        	Statut::VEHICULE_ENDOMAGE => Statut::getStatut(Statut::VEHICULE_ENDOMAGE),
 	        	Statut::VEHICULE_VENDU => Statut::getStatut(Statut::VEHICULE_VENDU),
+	        	Statut::VEHICULE_RESERVE => Statut::getStatut(Statut::VEHICULE_RESERVE),
+	        	Statut::VEHICULE_AU_GARAGE => Statut::getStatut(Statut::VEHICULE_AU_GARAGE),
+	        	Statut::VEHICULE_EN_MISSION => Statut::getStatut(Statut::VEHICULE_EN_MISSION),
 	        ];
 
             return view("car.modification", compact("genres","vehicule", "chauffeurs", "status"));

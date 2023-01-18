@@ -28,45 +28,55 @@ use Illuminate\Support\MessageBag;
 trait VehiculeServices
 {
 
-  private function getListeVehiculeActif(){
-    $vehiculesBuilder = Vehicule::with('genre')->where("status", Statut::VEHICULE_ACTIF);
+  protected function getListeVehiculeActif(){
+    $vehiculesBuilder = Vehicule::with('genre')->whereIn("status", [Statut::VEHICULE_ACTIF, Statut::VEHICULE_EN_MISSION, Statut::VEHICULE_AU_GARAGE]);
+    return $this->getListeVehicule(Vehicule::VL, $vehiculesBuilder);
+  }
+  protected function getListeVehiculeInactif(){
+    $vehiculesBuilder = Vehicule::with('genre')->whereIn("status", [Statut::VEHICULE_ENDOMAGE, Statut::VEHICULE_RESERVE, Statut::VEHICULE_VENDU]);
     return $this->getListeVehicule(Vehicule::VL, $vehiculesBuilder);
   }
 
-  private function getListeAll(){
+  protected function getListeAll(){
     return $this->triVehicule(Vehicule::with("genre"));
   }
 
-  private function getListeVehiculesByStatus(array $statuts){
+  protected function getListeVehiculesByStatus(array $statuts){
     return $this->triVehicule(
       Vehicule::with("genre")->whereIn("status", $statuts)
     );
   }
 
-  private function getListeVehicule(string $type, Builder $builder){
+  protected function getListeVehicule(string $type, Builder $builder){
 
     $vehicules = $builder->join("genre","genre.id","=","vehicule.genre_id")
       ->where("genre.categorie", "=", $type)->select('vehicule.*');
     return $this->triVehicule($vehicules, 15);
   }
 
-  private function triVehicule(Builder $builder, int $page = 25){
-    if(\request()->has("immatriculation") && !empty(\request()->query("immatriculation"))){
-      $builder = $builder->where("immatriculation","like","%".\request()->query("immatriculation")."%");
+  protected function triVehicule(Builder $builder, int $page = 25){
+    if(\request()->has("search") && !empty(\request()->query("search"))){
+      $builder = $builder->where("immatriculation","like","%".\request()->query("search")."%");
+    }
+    if(\request()->has("search") && !empty(\request()->query("search"))){
+      $builder = $builder->orWhere("marque","like","%".\request()->query("search")."%");
+    }
+    if(\request()->has("search") && !empty(\request()->query("search"))){
+      $builder = $builder->orWhere("typecommercial","like","%".\request()->query("search")."%");
     }
 
     return $builder->paginate($page);
   }
 
-  private function getDetailsFromImmatriculation(string $immatriculation){
+  protected function getDetailsFromImmatriculation(string $immatriculation){
     return Vehicule::with("genre","chauffeur","interventions")->where("immatriculation", $immatriculation)->firstOrFail();
   }
 
-  private function getListeGenreVehicule() : Collection{
+  protected function getListeGenreVehicule() : Collection{
     return Genre::all();
   }
 
-  private function updateIntervention(int $interventionId, PieceFournisseur $piece)
+  protected function updateIntervention(int $interventionId, PieceFournisseur $piece)
   {
     $intervention = Intervention::find($interventionId);
     if($intervention)
@@ -80,7 +90,7 @@ trait VehiculeServices
     {
         $this->validate($request,$this->validateRules(false));
 
-        $this->save($request);
+        $vehicule = $this->save($request);
 
         if(!$request->expectsJson()) {
             $notification = new Notifications();
@@ -88,10 +98,10 @@ trait VehiculeServices
 
             return back()->with(Notifications::NOTIFICATION_KEYS_SESSION,$notification);
         }
-        return null;
+        return $vehicule;
     }
 
-    private function save(Request $request, Vehicule $vehicule = null)
+    protected function save(Request $request, Vehicule $vehicule = null) : Vehicule
     {
         if($vehicule === null){
             $vehicule = new Vehicule($request->except('_token'));
@@ -102,10 +112,12 @@ trait VehiculeServices
         $vehicule->dateachat = Carbon::createFromFormat('d/m/Y',$request->input("dateachat"))->toDateString();
 
         $vehicule->save();
+
+        return $vehicule;
     }
 
-    public function update(Request $request)
-    {
+    public function update(Request $request){
+
         $this->validate($request, $this->validateRules(true));
 
         try{
@@ -113,12 +125,19 @@ trait VehiculeServices
 
             $vehicule->fill($request->except("visite", "assurance", "dateachat"));
 
+            $vehicule->visite    = Carbon::createFromFormat('d/m/Y',$request->input("visite")   )->toDateString();
+            $vehicule->assurance = Carbon::createFromFormat('d/m/Y',$request->input("assurance"))->toDateString();
+            $vehicule->dateachat = Carbon::createFromFormat('d/m/Y',$request->input("dateachat"))->toDateString();
+
+
+          if(!$request->expectsJson()) {
             $this->save($request, $vehicule);
 
-            //$notification = new Notifications();
-            //$notification->add($notification::SUCCESS,Lang::get('message.vehicule.modifier',['immatriculation' => $request->input('immatriculation')]));
+            $notification = new Notifications();
+            $notification->add($notification::SUCCESS, Lang::get('message.vehicule.modifier', ['immatriculation' => $request->input('immatriculation')]));
 
-            //return back()->with(Notifications::NOTIFICATION_KEYS_SESSION,$notification);
+            return back()->with(Notifications::NOTIFICATION_KEYS_SESSION, $notification);
+          }
         }catch (ModelNotFoundException $e){
             Log::error($e->getMessage()."\r\n".$e->getTraceAsString());
             return back()->withErrors("Véhicule non trouvé");
@@ -129,7 +148,7 @@ trait VehiculeServices
     /**
      * @return array
      */
-    protected function validateRules($withID = false)
+    protected function validateRules($withID = false, $withChauffeur = false)
     {
         $rules = [
             'immatriculation' =>'required|regex:/([0-9]{1,4})([A-Z]{2})([0-2]{2})/',
@@ -143,28 +162,16 @@ trait VehiculeServices
             'puissancefiscale' => 'present',
             'dateachat' => "required|date_format:d/m/Y",
             'coutachat' => "required|numeric",
-            'chauffeur_id' => "required|exists:chauffeur,employe_id",
         ];
 
-        //if(request()->)
+        if($withChauffeur){
+          $rules['chauffeur_id'] = "required|exists:chauffeur,employe_id";
+        }
 
         if($withID){
             $rules['id'] = 'required|numeric';
         }
 
         return $rules;
-    }
-
-    private function test()
-    {
-        //dd($request->input());
-        //$this->validate($request,$this->validateRules(false));
-        //return back()->withInput()->withErrors('No body');
-
-
-        $n = new Notifications();
-        $n->add($n::INFO,'success');
-
-        return back()->withInput()->with(Notifications::NOTIFICATION_KEYS_SESSION,$n);
     }
 }
