@@ -9,7 +9,7 @@
                 <div class="header">
                     <div class="row clearfix">
                         <div class="col-md-4">
-                            <h2>Liste des véhicules</h2>
+                            <h2>Liste des véhicules {{$titre}}</h2>
                         </div>
                     </div>
                     <div class="row clearfix">
@@ -22,7 +22,7 @@
                                         <i class="material-icons">search</i>
                                     </span>
                                     <div class="form-line">
-                                        <input name="immatriculation" type="text" class="form-control" placeholder="N° d'immatriculation (XXXX XX 01)" value="{{ old("immatriculation", request()->query('immatriculation')) }}">
+                                        <input name="search" type="text" class="form-control" placeholder="N° d'immatriculation ou marque ou modèle" value="{{ old("search", request()->query('search')) }}">
                                     </div>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@
                             <th>GENRE</th>
                             <th>EXP VISITE</th>
                             <th>EXP ASSUR</th>
-                            <th>COULEUR</th>
+                            <th>Statut</th>
                             <th width="4%">PLACES</th>
                         </tr>
                         </thead>
@@ -75,7 +75,7 @@
                             <td>{{ $vehicule->genre->libelle }}</td>
                             <td>{{ (new \Carbon\Carbon($vehicule->visite))->format('d/m/Y') }}</td>
                             <td>{{ (new \Carbon\Carbon($vehicule->assurance))->format('d/m/Y') }}</td>
-                            <td>{{ $vehicule->couleur }}</td>
+                            <td>{{ \App\Statut::getStatut($vehicule->status) }}</td>
                             <td>{{ $vehicule->nbreplace }}</td>
                         </tr>
                         @endforeach

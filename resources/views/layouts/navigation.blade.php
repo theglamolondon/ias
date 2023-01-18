@@ -51,6 +51,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route("vehicule.liste.reformes") }}">
+                    <span>Reformés</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route("reparation.liste") }}">
                     <span>Réparations</span>
                 </a>

@@ -26,23 +26,24 @@ class RegisterController extends Controller
     {
 	    $this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
 
-        $vehicules = Vehicule::with('genre')->where("status", Statut::VEHICULE_ACTIF);
+      $vehicules = $this->getListeVehiculeActif();
+      $titre = "Véhicules actifs";
 
-        if(Auth::user()->employe->service->code == Service::GESTIONNAIRE_PL){
-	        $vehicules = $vehicules->join("genre","genre.id","=","vehicule.genre_id")
-	                     ->where("genre.categorie", "=", "PL");
-        }elseif(Auth::user()->employe->service->code == Service::GESTIONNAIRE_VL){
-	        $vehicules = $vehicules->join("genre","genre.id","=","vehicule.genre_id")
-	                     ->where("genre.categorie", "=", "VL");
-        }
+      return view('car.liste',compact('vehicules', "titre"));
+    }
 
-        if(\request()->has("immatriculation") && !empty(\request()->query("immatriculation"))){
-			$vehicules = $vehicules->where("immatriculation","like","%".\request()->query("immatriculation")."%");
-        }
+	/**
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 * @throws \Illuminate\Auth\Access\AuthorizationException
+	 */
+    public function indexReformes()
+    {
+	    $this->authorize(Actions::READ, collect([Service::DG, Service::ADMINISTRATION, Service::INFORMATIQUE, Service::GESTIONNAIRE_VL, Service::GESTIONNAIRE_PL]));
 
-        $vehicules = $vehicules->paginate();
+      $vehicules = $this->getListeVehiculeInactif();
+      $titre = "Véhicules reformés";
 
-        return view('car.liste',compact('vehicules'));
+      return view('car.liste',compact('vehicules', "titre"));
     }
 
 	/**
