@@ -117,8 +117,6 @@
 
         <br/>
         <br/>
-        <br/>
-        <br/>
 
         <span class="h3">CONDITIONS</span>
         <hr/>
